@@ -16,8 +16,8 @@ The paper does not prove a new convergence result for the 3n+1 problem. Its cont
 
 ## Files
 
-- `collatz_graph_paper_v8.tex` — LaTeX source (v8)
-- `history/` — earlier versions v1–v7
+- `paper/collatz_graph_paper.tex` — LaTeX source (current)
+- `paper/history/` — earlier versions v1–v9
 - `code/` — Python scripts that verify the paper's main results
 
 ## Code
