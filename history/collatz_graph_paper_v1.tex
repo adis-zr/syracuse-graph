@@ -1,0 +1,1186 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+\allowdisplaybreaks
+\setlist[itemize]{topsep=3pt,itemsep=2pt,leftmargin=1.6em}
+\setlist[enumerate]{topsep=3pt,itemsep=2pt,leftmargin=1.8em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\nuu}{\nu_2}
+\newcommand{\Ecal}{\mathcal E}
+\newcommand{\Rcal}{\mathcal R}
+\newcommand{\V}{V}
+\newcommand{\VD}{V_D}
+\newcommand{\GD}{G_D}
+\newcommand{\CD}{C_D}
+\newcommand{\KD}{K_D}
+\newcommand{\bdD}{\partial_D}
+\newcommand{\Reach}{\operatorname{Reach}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\depth}{\operatorname{depth}}
+\newcommand{\Pre}{\mathsf{Pre}}
+\newcommand{\Bmap}{\mathcal B}
+\newcommand{\Sig}{\Sigma}
+\newcommand{\Fmap}{F}
+\newcommand{\Sfam}{\mathcal S}
+\newcommand{\Pair}{\mathsf P}
+\newcommand{\Seed}{\operatorname{Seed}}
+\newcommand{\Ori}{\operatorname{or}}
+\newcommand{\Rec}{\operatorname{Rec}}
+\newcommand{\oddrep}{\operatorname{oddrep}}
+
+\title{Adaptive Residue--Refinement Graphs and Binomial Distance Layers\\
+\large A finite valuation graph arising from the Collatz passage}
+\author{}
+\date{First draft --- April 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For each integer $D\ge 1$ we define a finite directed graph $G_D$ whose vertices are odd residue classes modulo powers of two up to depth $D$.  A vertex is either \emph{resolved}, in which case a valuation-labeled forward edge is determined, or \emph{exceptional}, in which case the class refines by one binary digit.  The construction is motivated by the valuation data appearing in the odd Collatz/Syracuse passage, but the results in this paper are finite graph theory and enumerative combinatorics.
+
+The graph $G_D$ has a unique nontrivial strongly connected component $C_D$.  It is described explicitly as the union of exceptional vertices and direct-return vertices, after removing a small truncation boundary, and has size $D(D-2)$ for $D\ge 3$.  Resolved forward preimages of a target of depth $e$ are naturally indexed by pairs $e<i<j\le D$.  This pair indexing gives a history coordinate for vertices at positive directed distance from $C_D$.  After quotienting by the top-bit involution, the depth-$d$, distance-$k$ layer is naturally bijective with
+\[
+\Sfam_{d,k}=\{\Sigma\subseteq [d]: d\in\Sigma,\ |\Sigma|=2k+2\}.
+\]
+Equivalently, the oriented layer has cardinality
+\[
+\bigl|\{v\in V_D:\depth(v)=d,\ R_D(v)=k\}\bigr|
+=2\binom{d-1}{2k+1},\qquad k\ge 1.
+\]
+Thus the graph and its binomial distance layers are the subject; the Collatz map is the source of the local valuation rule.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+This paper studies a finite directed graph built from odd residue classes modulo powers of two.  The construction is adaptive: at a residue class whose local valuation data are not yet determined, the graph asks for one more binary digit; once the valuation data are determined, the graph follows the induced forward transition.  The resulting finite graph has a surprisingly rigid structure.  It has a single recurrent core, a small boundary caused by truncation, an exact pair-indexing theorem for resolved preimages, and binomial distance layers classified by subset histories.
+
+The local rule comes from the following odd-to-odd valuation passage.  For an odd integer $X$, write
+\[
+X+1=2^tq,
+\qquad q\text{ odd},
+\]
+and then write
+\[
+3^tq-1=2^\rho Y,
+\qquad Y\text{ odd}.
+\]
+The passage sends $X$ to
+\[
+\Bmap(X)=Y=\frac{3^tq-1}{2^\rho}.
+\]
+The pair $(t,\rho)$ records how much two-adic information was used by the passage.  The graph below asks a finite-information question: given only an odd residue class modulo $2^d$, is the passage data already determined?  If it is, we draw the corresponding forward edge.  If it is not, we refine the class to its two children modulo $2^{d+1}$.
+
+The main point is that no integer-orbit assertion is needed for the finite graph theorems.  The Collatz/Syracuse map motivates the formulas, but the results are statements about the finite graphs $G_D$.
+
+\subsection{Main results}
+
+The vertices of $G_D$ are odd residue classes $(r,d)$ modulo $2^d$, where $1\le d\le D$.  At each depth $d$ there are exactly $d$ exceptional residues, denoted $\Ecal_d$; all other residues are resolved.  The exceptional vertices refine by one bit.  The resolved vertices have a uniquely determined valuation edge.
+
+The first result classifies the recurrent part of the graph.  Let $\Rcal_d$ be the set of resolved vertices at depth $d$ whose forward edge returns directly to $(1,1)$, and let
+\[
+\bdD=
+\{(r,D):r\in\Ecal_D\}
+\cup
+\{(2^{D-1}-1,D-1)\}
+\]
+be the truncation boundary.
+
+\begin{theorem}[Structural core theorem, informal form]
+For $D\ge 3$, the graph $G_D$ has exactly one nontrivial strongly connected component $C_D$.  It is
+\[
+C_D=
+\left(
+\{(r,d):r\in\Ecal_d\}
+\cup
+\bigcup_{d=1}^D\Rcal_d
+\right)\setminus\bdD,
+\]
+and
+\[
+|C_D|=D(D-2).
+\]
+Moreover, a vertex reaches $C_D$ if and only if it is not in $\bdD$.
+\end{theorem}
+
+The second result explains why pairs of integers enter the enumeration.  A resolved preimage of a target vertex of depth $e$ is naturally indexed by a pair of intermediate depths.
+
+\begin{theorem}[Preimage-pair theorem, informal form]
+Fix a target vertex $(s,e)\in V_D$.  The resolved forward preimages of $(s,e)$ are in natural bijection with pairs
+\[
+e<i<j\le D.
+\]
+The source has depth $j$; the two valuation increments are $t=i-e$ and $\rho=j-i$.
+\end{theorem}
+
+The third result classifies the positive finite-distance layers.  Let
+\[
+R_D(v)=\dist(v,C_D)
+\]
+when $v$ reaches the core.  For $k\ge1$, define
+\[
+\Sfam_{d,k}=
+\{\Sigma\subseteq[d]:d\in\Sigma,
+\ |\Sigma|=2k+2\}.
+\]
+The set $\Sigma$ is not an artificial counting coordinate: it is the projected history obtained by recording the pair attached to each resolved preimage step, together with the two-element seed label of the terminal core vertex.
+
+\begin{theorem}[History bijection and binomial layers, informal form]
+For $D\ge3$, $k\ge1$, and $1\le d\le D$, there is a natural oriented bijection
+\[
+\{v\in V_D:\depth(v)=d,\ R_D(v)=k\}
+\cong
+\{+,-\}\times\Sfam_{d,k}.
+\]
+After quotienting by the top-bit involution, the same layer is naturally bijective with $\Sfam_{d,k}$.  Consequently
+\[
+\bigl|\{v\in V_D:\depth(v)=d,\ R_D(v)=k\}\bigr|
+=2\binom{d-1}{2k+1}
+\]
+for every $k\ge1$, with the usual convention that the binomial coefficient is zero outside its range.
+\end{theorem}
+
+\subsection{Organization}
+
+Section~\ref{sec:graph} defines the finite graph.  Section~\ref{sec:exceptional} proves the elementary exceptional-residue algebra.  Section~\ref{sec:core} proves the structural core theorem.  Section~\ref{sec:topbit} proves the stable top-bit symmetry.  Section~\ref{sec:preimages} proves the preimage-pair theorem.  Section~\ref{sec:histories} defines projected histories and proves the oriented and quotient bijection theorems.  Section~\ref{sec:collatz} explains the relation to Collatz and states explicitly what is not claimed.
+
+\section{The finite graph \texorpdfstring{$G_D$}{G-D}}\label{sec:graph}
+
+Fix $D\ge1$.  For $d\ge1$, let $V_d$ be the set of odd residue classes modulo $2^d$, represented by the odd integers
+\[
+1\le r<2^d.
+\]
+A vertex of $G_D$ is a pair
+\[
+(r,d),
+\qquad 1\le d\le D,
+\qquad r\in V_d.
+\]
+We call $d$ the \emph{depth} of the vertex and write $\depth(r,d)=d$.  Thus
+\[
+V_D=\{(r,d):1\le d\le D,
+\ r\equiv1\pmod2,
+\ 1\le r<2^d\},
+\]
+and
+\[
+|V_D|=\sum_{d=1}^D2^{d-1}=2^D-1.
+\]
+The vertex $(1,1)$ is the coarsest odd residue class.  It should not be confused with the integer $1$, which is represented by the compatible tower
+\[
+(1,1),(1,2),(1,3),\ldots.
+\]
+
+When an odd residue modulo $2^m$ is specified only modulo $2^m$, we write $\oddrep_m(x)$ for its canonical odd representative in $\{1,3,\ldots,2^m-1\}$.
+
+\subsection{Exceptional and resolved residues}
+
+At depth $d$, a residue class is exceptional if the local valuation formula is not yet determined at positive target depth.  The exceptional residues are explicit.
+
+For $1\le t<d$, define
+\[
+r_{d,t}\equiv 2^t(3^t)^{-1}-1\pmod {2^d},
+\]
+where $(3^t)^{-1}$ is computed modulo $2^{d-t}$ and the canonical odd representative modulo $2^d$ is chosen.  Define also
+\[
+r_{d,d}=2^d-1.
+\]
+Let
+\[
+\Ecal_d=\{r_{d,1},\ldots,r_{d,d}\}.
+\]
+The residues in $\Ecal_d$ are distinct: for $t<d$ one has $\nuu(r_{d,t}+1)=t$, while $\nuu(r_{d,d}+1)=d$.  Thus $|\Ecal_d|=d$.  The residues not in $\Ecal_d$ are called \emph{resolved}.
+
+\begin{remark}
+The word exceptional has no dynamical meaning by itself.  It only means that at the current precision the class does not determine a positive-depth resolved forward edge.  Such a class is handled by refinement.
+\end{remark}
+
+\subsection{Edges}
+
+There are two kinds of directed edges.
+
+\paragraph{Refinement edges.}
+If $(r,d)$ is exceptional and $d<D$, then the graph asks for one more binary digit and has two refinement edges
+\[
+(r,d)\longrightarrow (r,d+1),
+\qquad
+(r,d)\longrightarrow (r+2^d,d+1).
+\]
+If $d=D$, the graph is truncated and no refinement edge is drawn inside $G_D$.
+
+\paragraph{Resolved valuation edges.}
+If $(r,d)$ is resolved, put
+\[
+t=\nuu(r+1),
+\qquad
+q=\frac{r+1}{2^t},
+\qquad
+\rho=\nuu(3^tq-1),
+\qquad
+e=d-t-\rho.
+\]
+Lemma~\ref{lem:resolved-valid} below proves that resolvedness implies $e\ge1$.  Let
+\[
+y=\frac{3^tq-1}{2^\rho}
+\]
+and let
+\[
+s=\oddrep_e(y).
+\]
+Then $G_D$ has the resolved forward edge
+\[
+(r,d)\longrightarrow(s,e).
+\]
+We write this partial forward map as $F(r,d)=(s,e)$ when $(r,d)$ is resolved.
+
+\subsection{Boundary and edge count}
+
+The truncation boundary is
+\[
+\bdD=
+\{(r,D):r\in\Ecal_D\}
+\cup
+\{(2^{D-1}-1,D-1)\}.
+\]
+For $D\ge2$ it has size $D+1$.
+
+\begin{proposition}[Edge count]\label{prop:edge-count}
+For $D\ge2$,
+\[
+|E(G_D)|=2^D-1+\frac{D(D-3)}2.
+\]
+\end{proposition}
+
+\begin{proof}
+At depth $d<D$, the $d$ exceptional vertices contribute $2d$ refinement edges and the $2^{d-1}-d$ resolved vertices contribute one forward edge each.  Thus depth $d<D$ contributes $2^{d-1}+d$ edges.  At depth $D$, the exceptional vertices have no refinement edges and the resolved vertices contribute $2^{D-1}-D$ edges.  Therefore
+\[
+|E(G_D)|=
+\sum_{d=1}^{D-1}(2^{d-1}+d)+(2^{D-1}-D)
+=2^D-1+\frac{D(D-3)}2.
+\]
+\end{proof}
+
+\section{Exceptional algebra}\label{sec:exceptional}
+
+The structural theorem is driven by three elementary facts: resolved edges have positive target depth, exceptional vertices have exceptional parents, and the children of a non-maximal exceptional vertex split into one exceptional child and one direct-return child.
+
+\begin{lemma}[Resolved edges are valid]\label{lem:resolved-valid}
+If $(r,d)$ is resolved, then the resolved edge formula gives $e=d-t-\rho\ge1$.
+\end{lemma}
+
+\begin{proof}
+Let
+\[
+t=\nuu(r+1),
+\qquad
+q=\frac{r+1}{2^t},
+\qquad
+\rho=\nuu(3^tq-1),
+\qquad
+e=d-t-\rho.
+\]
+If $e<1$, then $\rho\ge d-t$, so
+\[
+3^tq\equiv1\pmod {2^{d-t}}.
+\]
+Therefore
+\[
+q\equiv(3^t)^{-1}\pmod {2^{d-t}},
+\]
+and hence
+\[
+r\equiv2^t(3^t)^{-1}-1\pmod {2^d}.
+\]
+Thus $r$ is the exceptional residue of type $t$, contradicting resolvedness.  Hence $e\ge1$.
+\end{proof}
+
+\begin{lemma}[Exceptional parent lemma]\label{lem:parent}
+Every exceptional residue at depth $d>1$ reduces modulo $2^{d-1}$ to an exceptional residue at depth $d-1$.  More precisely, if $1\le t<d$, then $r_{d,t}$ reduces to $r_{d-1,t}$ when $t<d-1$ and to $r_{d-1,d-1}$ when $t=d-1$; also $r_{d,d}$ reduces to $r_{d-1,d-1}$.
+Consequently every exceptional vertex is reachable from $(1,1)$ by refinement edges.
+\end{lemma}
+
+\begin{proof}
+For $t<d$, write
+\[
+r_{d,t}=2^tu-1,
+\qquad
+3^tu\equiv1\pmod {2^{d-t}}.
+\]
+If $t<d-1$, reducing the congruence modulo $2^{d-1-t}$ gives the defining congruence for $r_{d-1,t}$.  If $t=d-1$, then the modulus is $2$, so $u\equiv1\pmod2$ and
+\[
+r_{d,d-1}\equiv2^{d-1}-1=r_{d-1,d-1}\pmod {2^{d-1}}.
+\]
+Finally,
+\[
+r_{d,d}=2^d-1\equiv2^{d-1}-1=r_{d-1,d-1}\pmod {2^{d-1}}.
+\]
+Iterating the parent relation gives a refinement path from $(1,1)$ to any exceptional vertex.
+\end{proof}
+
+\begin{lemma}[Exceptional child lemma]\label{lem:child}
+Let $1\le t<d$, and let $(r_{d,t},d)$ be a non-maximal exceptional vertex.  Among its two refinement children at depth $d+1$, exactly one is exceptional of type $t$, namely $(r_{d+1,t},d+1)$, and the other is resolved with forward target $(1,1)$.
+
+If $t=d$, then the two children of the maximal exceptional vertex $(2^d-1,d)$ are exceptional of types $d$ and $d+1$ at depth $d+1$.
+\end{lemma}
+
+\begin{proof}
+First suppose $t<d$.  Write
+\[
+r_{d,t}=2^tu-1,
+\qquad
+3^tu\equiv1\pmod {2^{d-t}}.
+\]
+The two lifts to depth $d+1$ correspond to
+\[
+q=u+\epsilon 2^{d-t},
+\qquad
+\epsilon\in\{0,1\},
+\]
+modulo $2^{d+1-t}$.  Write
+\[
+3^tu-1=2^{d-t}a.
+\]
+Then
+\[
+3^tq-1=2^{d-t}(a+\epsilon3^t).
+\]
+Since $3^t$ is odd, exactly one choice of $\epsilon$ makes $a+\epsilon3^t$ even, and exactly one choice makes it odd.
+
+The even choice satisfies
+\[
+3^tq\equiv1\pmod {2^{d+1-t}},
+\]
+so the corresponding child is $r_{d+1,t}$.  The odd choice has
+\[
+\nuu(3^tq-1)=d-t.
+\]
+At source depth $d+1$, the target depth is
+\[
+e=(d+1)-t-(d-t)=1.
+\]
+Thus the corresponding child is resolved and maps to $(1,1)$.
+
+If $t=d$, then the two depth-$(d+1)$ lifts are
+\[
+2^d-1
+\qquad\text{and}\qquad
+2^{d+1}-1,
+\]
+which are $r_{d+1,d}$ and $r_{d+1,d+1}$.
+\end{proof}
+
+\begin{definition}[Direct-return vertices]
+A resolved vertex $(r,d)$ is a \emph{direct-return vertex} if its forward edge has target depth $1$.  Equivalently,
+\[
+(r,d)\to(1,1).
+\]
+Let $\Rcal_d$ be the set of direct-return vertices at depth $d$.
+\end{definition}
+
+\begin{corollary}[Direct-return count]\label{cor:direct-return-count}
+For $d\ge1$,
+\[
+|\Rcal_d|=\max(d-2,0).
+\]
+For $d\ge3$, the direct-return vertices at depth $d$ are exactly the non-exceptional children of the non-maximal exceptional vertices
+\[
+(r_{d-1,t},d-1),
+\qquad
+1\le t\le d-2.
+\]
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:child}, each non-maximal exceptional type $t$ at depth $d-1$, with $1\le t\le d-2$, has exactly one direct-return child at depth $d$.  Distinct parents have distinct children.
+
+Conversely, suppose $(r,d)$ is direct-return and put $t=\nuu(r+1)$.  Since $e=1$, we have
+\[
+\rho=d-1-t,
+\]
+so $t\le d-2$.  Reducing $r$ modulo $2^{d-1}$ gives the exceptional residue $r_{d-1,t}$, and $(r,d)$ is the non-exceptional child described in Lemma~\ref{lem:child}.
+\end{proof}
+
+\section{The structural core}\label{sec:core}
+
+For $D\ge3$, define
+\[
+K_D=
+\left(
+\{(r,d):1\le d\le D,\ r\in\Ecal_d\}
+\cup
+\bigcup_{d=1}^D\Rcal_d
+\right)
+\setminus\bdD.
+\]
+Thus $K_D$ consists of the exceptional vertices and the direct-return vertices, with the truncation boundary removed.
+
+\begin{theorem}[Structural core theorem]\label{thm:core}
+For every $D\ge3$, the graph $G_D$ has exactly one nontrivial strongly connected component $C_D$.  It contains $(1,1)$, and
+\[
+C_D=K_D.
+\]
+Its size is
+\[
+|C_D|=D(D-2).
+\]
+More precisely,
+\[
+|C_D\cap V_1|=1,
+\]
+\[
+|C_D\cap V_d|=2(d-1),\qquad 2\le d\le D-2,
+\]
+\[
+|C_D\cap V_{D-1}|=2D-5,
+\]
+and
+\[
+|C_D\cap V_D|=D-2.
+\]
+Moreover, a vertex reaches $C_D$ if and only if it is not in the boundary:
+\[
+R_D(v)<\infty\Longleftrightarrow v\notin\bdD,
+\]
+where $R_D(v)=\dist(v,C_D)$ when the distance is finite.
+\end{theorem}
+
+The proof is broken into elementary routing lemmas.
+
+\begin{lemma}[$K_D$ reaches the hub]\label{lem:k-reaches-hub}
+For every $v\in K_D$,
+\[
+v\leadsto(1,1).
+\]
+\end{lemma}
+
+\begin{proof}
+If $v$ is direct-return, this is true by definition.  Suppose $v=(r_{d,t},d)$ is exceptional and non-boundary.  If $t<d$, then Lemma~\ref{lem:child} gives a direct-return child at depth $d+1$, so
+\[
+v\to\text{direct-return child}\to(1,1).
+\]
+If $t=d$, then $v$ is maximal exceptional.  Since $v\notin\bdD$, we have $d\le D-2$.  One child is $(r_{d+1,d},d+1)$, a non-maximal exceptional vertex, and the previous case sends that child to $(1,1)$.
+\end{proof}
+
+\begin{lemma}[The hub reaches $K_D$]\label{lem:hub-reaches-k}
+For every $v\in K_D$,
+\[
+(1,1)\leadsto v.
+\]
+\end{lemma}
+
+\begin{proof}
+If $v$ is exceptional, this is Lemma~\ref{lem:parent}.  If $v$ is direct-return at depth $d$, then Corollary~\ref{cor:direct-return-count} says that it is the non-exceptional child of some non-maximal exceptional vertex at depth $d-1$.  The exceptional parent is reachable from $(1,1)$ by Lemma~\ref{lem:parent}, and one final refinement edge reaches $v$.
+\end{proof}
+
+\begin{corollary}\label{cor:k-strong}
+$K_D$ is strongly connected and contains $(1,1)$.
+\end{corollary}
+
+\begin{proof}
+For any $v,w\in K_D$,
+\[
+v\leadsto(1,1)\leadsto w.
+\]
+\end{proof}
+
+\begin{lemma}[Non-boundary routing]\label{lem:non-boundary-routing}
+For $D\ge3$,
+\[
+V_D\setminus\bdD\subseteq\Reach^{-1}(K_D).
+\]
+That is, every non-boundary vertex reaches $K_D$.
+\end{lemma}
+
+\begin{proof}
+Let $v\in V_D\setminus\bdD$.  If $v$ is exceptional or direct-return, then $v\in K_D$.
+
+Otherwise $v$ is resolved and not direct-return.  Follow its unique forward edge.  Every resolved forward edge strictly lowers depth, because
+\[
+e=d-t-\rho,
+\qquad t\ge1,
+\qquad \rho\ge1.
+\]
+Thus the depth drops by at least $2$ at each resolved step.  The path must eventually reach either $(1,1)$, a direct-return vertex, or an exceptional vertex.  The first two are in $K_D$.  If an exceptional vertex is reached as the target of a forward edge, its depth is at most $D-2$, hence it is not in $\bdD$ and lies in $K_D$.
+\end{proof}
+
+\begin{lemma}[Core exits are boundary-trapped]\label{lem:boundary-trapped}
+Every edge from $K_D$ to $V_D\setminus K_D$ lands in $\bdD$.  More precisely, such an edge can only land at the maximal exceptional vertex $(2^{D-1}-1,D-1)$ or at a terminal exceptional vertex at depth $D$.  Once a path leaves $K_D$ through such an edge, it cannot return to $K_D$.
+\end{lemma}
+
+\begin{proof}
+A direct-return vertex has its only outgoing edge to $(1,1)\in K_D$.
+
+Let $v\in K_D$ be exceptional.  If $v$ has depth $d\le D-3$, then Lemma~\ref{lem:child} shows that both refinement children lie in $K_D$: non-maximal exceptional vertices have one exceptional child and one direct-return child, while maximal exceptional vertices have two exceptional children, and no child at these depths is boundary.
+
+At depth $D-2$, the only possible exit occurs from the maximal exceptional vertex.  Its two children are exceptional vertices of types $D-2$ and $D-1$ at depth $D-1$; the first lies in $K_D$, while the second is the extra boundary vertex $(2^{D-1}-1,D-1)$.
+
+At depth $D-1$, a core exceptional vertex is non-maximal, because the maximal one is boundary.  Lemma~\ref{lem:child} gives one direct-return child at depth $D$, which lies in $K_D$, and one exceptional child at depth $D$, which is terminal boundary.
+
+The extra boundary vertex refines only to terminal exceptional vertices, and terminal exceptional vertices have no outgoing edges.  Therefore any core exit is boundary-trapped.
+\end{proof}
+
+\begin{lemma}[Acyclicity outside the core]\label{lem:acyclic-outside}
+The induced directed graph on $V_D\setminus K_D$ has no directed cycle.
+\end{lemma}
+
+\begin{proof}
+The only exceptional vertices outside $K_D$ are the boundary vertices.  Terminal exceptional vertices have no outgoing edges, and the extra boundary vertex has two refinement edges, both to terminal exceptional vertices.  Hence no directed cycle can involve an exceptional vertex outside $K_D$.
+
+Every other vertex outside $K_D$ is resolved and not direct-return.  Its unique forward edge either enters $K_D$ or goes to a vertex of strictly lower depth.  Therefore any directed path that remains outside $K_D$, except for the one extra boundary refinement step, has strictly decreasing depth.  It cannot close into a directed cycle.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:core}]
+Lemmas~\ref{lem:k-reaches-hub} and~\ref{lem:hub-reaches-k} show that $K_D$ is strongly connected and contains $(1,1)$.  Therefore $K_D$ is contained in the strongly connected component of $(1,1)$.  Lemma~\ref{lem:boundary-trapped} shows that no vertex outside $K_D$ can be strongly connected with $(1,1)$: any path from $K_D$ to the outside enters the boundary-trapped set and cannot return.  Hence the component of $(1,1)$ is exactly $K_D$.
+
+Lemma~\ref{lem:acyclic-outside} shows that the induced graph outside $K_D$ has no directed cycle.  Therefore every SCC outside $K_D$ is singleton.  Hence $K_D$ is the unique nontrivial SCC.
+
+It remains to count.  At depth $d$, there are $d$ exceptional vertices and $\max(d-2,0)$ direct-return vertices.  Boundary exclusion removes all $D$ terminal exceptional vertices at depth $D$, and removes the single maximal exceptional vertex at depth $D-1$.  Therefore
+\[
+|C_D\cap V_1|=1,
+\]
+\[
+|C_D\cap V_d|=d+(d-2)=2(d-1),
+\qquad 2\le d\le D-2,
+\]
+\[
+|C_D\cap V_{D-1}|=(D-2)+(D-3)=2D-5,
+\]
+and
+\[
+|C_D\cap V_D|=D-2.
+\]
+Summing gives
+\[
+1+
+\sum_{d=2}^{D-2}2(d-1)
++(2D-5)
++(D-2)
+=D(D-2).
+\]
+The routing assertion is Lemma~\ref{lem:non-boundary-routing} together with the boundary-trapping description.
+\end{proof}
+
+\subsection{Stable core seed orbits}\label{subsec:core-seeds}
+
+For $d\ge2$, define the top-bit flip
+\[
+\tau_d(r,d)=
+\begin{cases}
+(r+2^{d-1},d),&1\le r<2^{d-1},\\
+(r-2^{d-1},d),&2^{d-1}<r<2^d.
+\end{cases}
+\]
+Equivalently, $\tau_d$ exchanges the two depth-$d$ lifts of the same residue modulo $2^{d-1}$.
+
+\begin{corollary}[Stable core seed labeling]\label{cor:core-seeds}
+Let $D\ge4$ and $2\le d\le D-2$.  Then $\tau_d$ partitions $C_D\cap V_d$ into $d-1$ two-element orbits.  These orbits are canonically labeled by
+\[
+\{a,d\},
+\qquad
+1\le a<d.
+\]
+More explicitly:
+\begin{itemize}
+\item If $1\le a\le d-2$, the orbit labeled $\{a,d\}$ is
+\[
+\{(r_{d,a},d),\ \tau_d(r_{d,a},d)\},
+\]
+where $(r_{d,a},d)$ is exceptional of type $a$ and $\tau_d(r_{d,a},d)$ is the direct-return child of $(r_{d-1,a},d-1)$.
+\item The final orbit labeled $\{d-1,d\}$ is
+\[
+\{(r_{d,d-1},d),\ (r_{d,d},d)\}
+=
+\{(2^{d-1}-1,d),\ (2^d-1,d)\}.
+\]
+\end{itemize}
+Therefore
+\[
+(C_D\cap V_d)/\tau_d
+\cong
+\{\{a,d\}:1\le a<d\}.
+\]
+\end{corollary}
+
+\begin{proof}
+The two depth-$d$ lifts of an exceptional residue $(r_{d-1,a},d-1)$ are $r_{d-1,a}$ and $r_{d-1,a}+2^{d-1}$ modulo $2^d$.  They differ by $2^{d-1}$, hence form a single $\tau_d$-orbit.  If $1\le a\le d-2$, Lemma~\ref{lem:child} says that exactly one of these two children is exceptional of type $a$, namely $(r_{d,a},d)$, and the other is a direct-return vertex.  Thus these two vertices form one $\tau_d$-orbit in the core.
+
+For $a=d-1$, the parent is the maximal exceptional residue at depth $d-1$.  Lemma~\ref{lem:child} says that its two children are exceptional of types $d-1$ and $d$ at depth $d$, namely
+\[
+2^{d-1}-1
+\qquad\text{and}\qquad
+2^d-1.
+\]
+These are exchanged by $\tau_d$.
+
+The stable-depth assumption $d\le D-2$ ensures that none of these vertices is removed by the boundary.  The listed orbits have size $2$ and there are $(d-2)+1=d-1$ of them, so they partition $C_D\cap V_d$, whose size is $2(d-1)$ by Theorem~\ref{thm:core}.
+\end{proof}
+
+\begin{corollary}[Unique finite-distance forward chain]\label{cor:unique-chain}
+If $v\notin C_D$ and $R_D(v)<\infty$, then $v$ is resolved and has a unique forward edge.  Repeating this edge gives a unique chain
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D,
+\]
+where $k=R_D(v)$.
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:core}, finite distance is equivalent to being outside $\bdD$.  Every non-boundary exceptional vertex is already in $C_D$, and every direct-return vertex is already in $C_D$.  Therefore a finite-distance vertex outside the core is resolved and not direct-return.  It has exactly one forward edge.  Since resolved forward edges strictly lower depth, repeated forwarding reaches $C_D$ after finitely many steps.  Minimality of distance gives the displayed chain length $k=R_D(v)$.
+\end{proof}
+
+\section{Stable top-bit symmetry}\label{sec:topbit}
+
+The stable core seed orbits show that $\tau_d$ is the relevant twofold symmetry at rank zero.  The next result proves the corresponding edge-level statement for every resolved edge that does not return directly to $(1,1)$.
+
+\begin{lemma}[Top-bit commutation for non-return resolved edges]\label{lem:top-bit-commute-edge}
+Let $v=(r,d)$ be resolved, and suppose its forward target is
+\[
+F(v)=(s,e)
+\]
+with $e\ge2$.  Then $\tau_dv$ is resolved, has the same valuation data $(t,\rho)$ and the same target depth $e$, and
+\[
+F(\tau_dv)=\tau_eF(v).
+\]
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+t=\nuu(r+1),\qquad q=\frac{r+1}{2^t},\qquad
+\rho=\nuu(3^tq-1),
+\]
+so that
+\[
+e=d-t-\rho\ge2.
+\]
+In particular,
+\[
+t\le d-2,
+\qquad
+\rho\le d-t-2<d-1-t.
+\]
+The top-bit flip has the form
+\[
+r'=r\pm2^{d-1}.
+\]
+Hence
+\[
+r'+1=2^t\bigl(q\pm2^{d-1-t}\bigr).
+\]
+Since $d-1-t\ge1$ and $q$ is odd, the new quotient
+\[
+q'=q\pm2^{d-1-t}
+\]
+is still odd.  Therefore $\nuu(r'+1)=t$.
+
+Now compare the terminal valuations:
+\[
+3^tq'-1=(3^tq-1)\pm3^t2^{d-1-t}.
+\]
+The first summand has exact valuation $\rho$, while the second has valuation $d-1-t$.  Since $\rho<d-1-t$, the sum has exact valuation $\rho$.  Thus the flipped source has the same $\rho$ and the same target depth
+\[
+e'=d-t-\rho=e.
+\]
+It is not exceptional, because exact valuation $\rho<d-t$ rules out the exceptional congruence of type $t$.
+
+Let
+\[
+y=\frac{3^tq-1}{2^\rho},
+\qquad
+ y'=\frac{3^tq'-1}{2^\rho}.
+\]
+Then
+\[
+y'=y\pm3^t2^{d-1-t-\rho}=y\pm3^t2^{e-1}.
+\]
+Reducing modulo $2^e$, the perturbation is congruent to $2^{e-1}$, because $\pm3^t$ is odd.  Therefore the canonical odd representative of $y'$ modulo $2^e$ is obtained from the canonical odd representative of $y$ by flipping the top bit.  This is exactly $F(\tau_dv)=\tau_eF(v)$.
+\end{proof}
+
+\begin{theorem}[Stable top-bit equivariance]\label{thm:top-bit-equivariance}
+Let $D\ge4$.
+\begin{enumerate}
+\item If $v\in C_D$ has stable depth $2\le d\le D-2$, then $\tau_dv\in C_D$ and $v,\tau_dv$ have the same seed label from Corollary~\ref{cor:core-seeds}.
+\item If $v=(r,d)\notin C_D$ has finite distance, then $\tau_dv$ also has finite distance and
+\[
+R_D(\tau_dv)=R_D(v).
+\]
+More precisely, if
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D
+\]
+is the unique finite-distance chain and $v_m$ has depth $d_m$, then
+\[
+\tau_{d_k}v_k\to\tau_{d_{k-1}}v_{k-1}\to\cdots\to\tau_{d_0}v_0\in C_D
+\]
+is the corresponding chain for the flipped source.
+\end{enumerate}
+Consequently, for every $k\ge1$ and every depth $d\ge2$, $\tau_d$ is an involution of the positive finite-distance layer
+\[
+\{v\in V_D:\depth(v)=d,
+ R_D(v)=k\}.
+\]
+\end{theorem}
+
+\begin{proof}
+The first assertion is Corollary~\ref{cor:core-seeds}.
+
+For the second assertion, let $v=v_k\to\cdots\to v_0\in C_D$ be the unique chain from Corollary~\ref{cor:unique-chain}.  For every $m\ge1$, the vertex $v_m$ is finite-distance and outside the core.  Hence it is resolved and not direct-return.  Therefore its target depth $d_{m-1}$ is at least $2$, so Lemma~\ref{lem:top-bit-commute-edge} gives
+\[
+F(\tau_{d_m}v_m)=\tau_{d_{m-1}}v_{m-1}.
+\]
+The terminal core vertex $v_0$ is also in stable depth.  Indeed, $v_1$ is not direct-return, so $d_0\ge2$; and every resolved edge lowers depth by at least two, so $d_0\le D-2$.  Thus the first assertion gives $\tau_{d_0}v_0\in C_D$.  This proves that $\tau_dv$ reaches the core in $k$ steps.
+
+It remains to rule out a shorter chain.  Suppose $\tau_dv$ reached $C_D$ in $h<k$ steps, and choose such a chain that first hits the core at its endpoint:
+\[
+w_h=\tau_dv\to w_{h-1}\to\cdots\to w_0\in C_D.
+\]
+The case $h=0$ is impossible, because the constructed $k$-step chain starts at a resolved non-direct-return vertex and therefore starts outside the core.  Thus $h\ge1$.  For every $j\ge1$, the vertex $w_j$ is finite-distance and outside the core, hence resolved and not direct-return; its target depth is therefore at least $2$, so Lemma~\ref{lem:top-bit-commute-edge} applies to $w_j$.
+
+Since $\tau$ is an involution, flipping this shorter chain at each depth gives
+\[
+v=\tau_{\depth(w_h)}w_h\to
+\tau_{\depth(w_{h-1})}w_{h-1}\to\cdots\to
+\tau_{\depth(w_0)}w_0.
+\]
+The endpoint $w_0$ is in stable core depth: the last edge $w_1\to w_0$ is not a direct return, so $\depth(w_0)\ge2$, and resolved edges lower depth by at least two, so $\depth(w_0)\le D-2$.  Hence the stable core assertion gives $\tau_{\depth(w_0)}w_0\in C_D$.  Thus $v$ would reach $C_D$ in $h$ steps, contradicting $R_D(v)=k$.  Therefore $R_D(\tau_dv)=k$.
+\end{proof}
+
+\section{Resolved preimages are indexed by pairs}\label{sec:preimages}
+
+The cleanest algebraic structure appears when preimages are viewed target-first.  Fix a target vertex and ask for all resolved sources whose forward edge lands at that target.  The answer is indexed by pairs of depths.
+
+\begin{theorem}[Forward-preimage pair theorem]\label{thm:preimage}
+Fix a target vertex
+\[
+u=(s,e)\in V_D.
+\]
+The resolved forward preimages of $u$ are in bijection with pairs
+\[
+e<i<j\le D.
+\]
+For such a pair, set
+\[
+t=i-e,
+\qquad
+\rho=j-i,
+\qquad
+d=j.
+\]
+Then the unique source with this pair is obtained by solving
+\[
+q\equiv3^{-t}(1+2^\rho s)\pmod {2^{e+\rho}}
+\]
+and setting
+\[
+r=\oddrep_j(2^tq-1).
+\]
+Thus the source is
+\[
+\Pre_{i,j}(s,e)=(r,j),
+\]
+and
+\[
+\Pre_{i,j}(s,e)\to(s,e).
+\]
+Consequently,
+\[
+|F_D^{-1}(s,e)|=\binom{D-e}{2}.
+\]
+\end{theorem}
+
+\begin{proof}
+A resolved edge from source depth $d$ to target depth $e$ satisfies
+\[
+d=e+t+\rho.
+\]
+Define
+\[
+i=e+t,
+\qquad
+j=d.
+\]
+Then $e<i<j\le D$.
+
+Conversely, choose $e<i<j\le D$ and set $t=i-e$, $\rho=j-i$, and $d=j$.  A source with target residue $s$ must satisfy
+\[
+3^tq-1\equiv2^\rho s\pmod {2^{e+\rho}},
+\]
+or
+\[
+3^tq\equiv1+2^\rho s\pmod {2^{e+\rho}}.
+\]
+Since $3^t$ is invertible modulo $2^{e+\rho}$, there is a unique solution
+\[
+q\equiv3^{-t}(1+2^\rho s)\pmod {2^{e+\rho}}.
+\]
+The right side is odd, so $q$ is odd.  Set $r=\oddrep_j(2^tq-1)$.  Then $\nuu(r+1)=t$.  Since $s$ is odd, the congruence above shows that $\nuu(3^tq-1)=\rho$ exactly, and reduction after dividing by $2^\rho$ gives target residue $s$ modulo $2^e$.  Hence the target is $(s,e)$.  The construction is unique because the congruence for $q$ is unique modulo $2^{e+\rho}$.
+\end{proof}
+
+The pair attached to the edge is
+\[
+\{i,j\}=\{e+t,d\}.
+\]
+This identity is algebraic.  It is the reason the distance-layer coordinate below is a subset of depths obtained by adding two new elements at each preimage step.
+
+\section{Preimage histories and the binomial bijection}\label{sec:histories}
+
+Let $v$ be a finite-distance vertex with $R_D(v)=k$.  If $k>0$, Corollary~\ref{cor:unique-chain} gives a unique forward chain
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D.
+\]
+Write
+\[
+v_m=(r_m,d_m),
+\qquad
+v_{m-1}=(s_{m-1},d_{m-1}).
+\]
+For each resolved edge $v_m\to v_{m-1}$, define its preimage pair
+\[
+\Pair_m(v)=\{d_{m-1}+\nuu(r_m+1),\ d_m\}.
+\]
+By Theorem~\ref{thm:preimage}, this is exactly the pair $\{i,j\}$ indexing $v_m$ as a resolved preimage of $v_{m-1}$.
+
+If $k\ge1$, the core endpoint is automatically in stable depth.  Indeed, $v_1$ is outside the core and hence is not direct-return, so $d_0\ge2$; and the last resolved edge lowers depth by at least two, so $d_0\le D-2$.  Therefore Corollary~\ref{cor:core-seeds} supplies a seed label
+\[
+\Seed(v_0)=\{a,d_0\},
+\qquad
+1\le a<d_0.
+\]
+The same seed convention applies when $k=0$ and $v$ is itself a stable-depth core vertex.
+
+\begin{definition}[Projected history set]\label{def:stable-history-set}
+For a finite-distance non-core vertex $v=v_k$ with $k\ge1$, define
+\[
+\Sigma(v)=\Seed(v_0)\cup\Pair_1(v)\cup\cdots\cup\Pair_k(v).
+\]
+For a stable-depth core vertex $v_0$, define $\Sigma(v_0)=\Seed(v_0)$.
+This is the \emph{projected history set}.  It forgets the top-bit orientation and remembers only the unordered union of the seed pair and the preimage pairs.
+\end{definition}
+
+\begin{theorem}[History disjointness]\label{thm:history-disjointness}
+Let $v=v_k$ be either a stable-depth core vertex or a finite-distance non-core vertex, with projected history set as above.  Then the union defining $\Sigma(v)$ is disjoint.  More precisely, for every $m\ge1$,
+\[
+\Pair_m(v)\subseteq(d_{m-1},d_m]
+\]
+and the accumulated previous history lies in $[1,d_{m-1}]$.  Consequently, if $v$ has depth $d$ and distance $k$, then
+\[
+\Sigma(v)\subseteq[d],
+\qquad
+ d\in\Sigma(v),
+\qquad
+|\Sigma(v)|=2k+2.
+\]
+In particular, for every positive finite-distance vertex of depth $d$ and distance $k$,
+\[
+\Sigma(v)\in\Sfam_{d,k},
+\]
+where
+\[
+\Sfam_{d,k}=\{\Sigma\subseteq[d]:d\in\Sigma,\ |\Sigma|=2k+2\}.
+\]
+\end{theorem}
+
+\begin{proof}
+The case $k=0$ is the seed case: $\Sigma(v_0)=\{a,d_0\}$ with $1\le a<d_0$, so the assertions are immediate.
+
+Now assume $k\ge1$.  For the edge $v_m\to v_{m-1}$, write
+\[
+t_m=\nuu(r_m+1),
+\qquad
+\rho_m=\nuu(3^{t_m}q_m-1),
+\qquad
+q_m=\frac{r_m+1}{2^{t_m}}.
+\]
+The target depth is
+\[
+d_{m-1}=d_m-t_m-\rho_m.
+\]
+Since $t_m\ge1$ and $\rho_m\ge1$,
+\[
+d_{m-1}<d_{m-1}+t_m<d_m.
+\]
+Therefore
+\[
+\Pair_m(v)=\{d_{m-1}+t_m,d_m\}\subseteq(d_{m-1},d_m].
+\]
+
+Induct on $m$.  The seed history at $v_0$ is contained in $[1,d_0]$ and contains $d_0$.  If the accumulated history through $v_{m-1}$ is contained in $[1,d_{m-1}]$, the displayed containment places the new pair entirely in the disjoint interval $(d_{m-1},d_m]$.  Thus the union remains disjoint, is contained in $[1,d_m]$, and contains the new terminal depth $d_m$.  Each step adds exactly two new elements, so after $k$ steps the cardinality is $2+2k$.
+\end{proof}
+
+\begin{corollary}[Projected histories are top-bit invariant]\label{cor:history-top-bit-invariant}
+If $v=(r,d)$ has positive finite distance, then
+\[
+\Sigma(\tau_dv)=\Sigma(v).
+\]
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:top-bit-equivariance} identifies the chain of $\tau_dv$ with the top-bit flips of the chain of $v$.  Lemma~\ref{lem:top-bit-commute-edge} shows that each corresponding edge has the same $t$, the same target depth, and the same source depth; hence it contributes the same pair $\{e+t,d\}$.  The two terminal core vertices have the same stable seed label by Corollary~\ref{cor:core-seeds}.  The projected unions are therefore equal.
+\end{proof}
+
+\subsection{Oriented reconstruction}
+
+The projected history set is invariant under top-bit flip, so one additional twofold datum is needed to reconstruct an oriented vertex.  That datum is the orientation of the terminal core seed.
+
+\begin{definition}[Oriented stable core seeds]\label{def:oriented-core-seeds}
+For a stable core depth $2\le b\le D-2$ and a seed label $1\le a<b$, define
+\[
+c^+_{a,b}=(r_{b,a},b),
+\qquad
+c^-_{a,b}=\tau_b c^+_{a,b}.
+\]
+By Corollary~\ref{cor:core-seeds}, these are exactly the two vertices in the stable core seed orbit labeled $\{a,b\}$.  If $w=c^\varepsilon_{a,b}$, put
+\[
+\operatorname{or}(w)=\varepsilon,
+\qquad
+\Seed(w)=\{a,b\}.
+\]
+For a positive finite-distance vertex $v=v_k$ with terminal core vertex $v_0$, define its terminal orientation by
+\[
+\operatorname{or}(v)=\operatorname{or}(v_0).
+\]
+\end{definition}
+
+\begin{definition}[Subset reconstruction]\label{def:subset-reconstruction}
+Let $k\ge1$, let $\Sigma\in\Sfam_{d,k}$, and let $\varepsilon\in\{+,-\}$.  Write
+\[
+\Sigma=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}\}.
+\]
+Start from the oriented seed
+\[
+v_0=c^\varepsilon_{\sigma_1,\sigma_2}.
+\]
+For $m=1,\ldots,k$, assume $v_{m-1}$ has depth $\sigma_{2m}$ and write
+\[
+v_{m-1}=(s_{m-1},\sigma_{2m}).
+\]
+Set
+\[
+i_m=\sigma_{2m+1},
+\qquad
+ d_m=\sigma_{2m+2},
+\]
+and define
+\[
+v_m=\Pre_{i_m,d_m}(s_{m-1},\sigma_{2m}).
+\]
+The inequalities
+\[
+\sigma_{2m}<\sigma_{2m+1}<\sigma_{2m+2}
+\]
+make this a legal application of Theorem~\ref{thm:preimage}.  Define
+\[
+\operatorname{Rec}_{D,d,k}(\varepsilon,\Sigma)=v_k.
+\]
+\end{definition}
+
+\begin{theorem}[Oriented reconstruction and legal-history classification]\label{thm:oriented-bijection}
+Let $D\ge3$, let $k\ge1$, and let $1\le d\le D$.  The map
+\[
+\Theta_{D,d,k}(v)=\bigl(\operatorname{or}(v),\Sigma(v)\bigr)
+\]
+is a bijection
+\[
+\{v\in V_D:\depth(v)=d,\ R_D(v)=k\}
+\longrightarrow
+\{+,-\}\times\Sfam_{d,k}.
+\]
+Its inverse is the subset reconstruction map
+\[
+(\varepsilon,\Sigma)
+\longmapsto
+\operatorname{Rec}_{D,d,k}(\varepsilon,
+\Sigma).
+\]
+Equivalently, the legal projected histories at depth $d$ and positive distance $k$ are exactly
+\[
+\Sfam_{d,k}=
+\{\Sigma\subseteq[d]:d\in\Sigma,
+\ |\Sigma|=2k+2\},
+\]
+and the only remaining datum needed to reconstruct the oriented vertex is the terminal core orientation.
+\end{theorem}
+
+\begin{proof}
+If $\Sfam_{d,k}$ is empty, then the source layer is empty by Theorem~\ref{thm:history-disjointness}, so the assertion is trivial.  Assume from now on that $\Sfam_{d,k}$ is nonempty.
+
+First reconstruct from an arbitrary pair $(\varepsilon,\Sigma)$ with $\Sigma\in\Sfam_{d,k}$, and write $\Sigma$ in increasing order as above.  Since $k\ge1$, the seed depth satisfies
+\[
+2\le\sigma_2\le d-2\le D-2.
+\]
+Thus $v_0=c^\varepsilon_{\sigma_1,\sigma_2}$ is a stable core vertex by Corollary~\ref{cor:core-seeds}.
+
+At step $m$, write $v_{m-1}=(s_{m-1},\sigma_{2m})$.  Theorem~\ref{thm:preimage} gives a unique resolved preimage
+\[
+v_m=\Pre_{\sigma_{2m+1},\sigma_{2m+2}}(s_{m-1},\sigma_{2m})
+\]
+of depth $\sigma_{2m+2}$, with forward target $v_{m-1}$ and edge pair
+\[
+\{\sigma_{2m+1},\sigma_{2m+2}\}.
+\]
+The target depth is $\sigma_{2m}\ge\sigma_2\ge2$, so this edge is not a direct return to $(1,1)$.  Hence $v_m$ is resolved and not direct-return, and therefore $v_m\notin C_D$ for every $m\ge1$.  The constructed chain
+\[
+v_k\to v_{k-1}\to\cdots\to v_0\in C_D
+\]
+therefore first reaches the core at $v_0$.  Since each $v_m$ for $m\ge1$ is resolved, its outgoing edge is unique; and since no $v_m$ with $m\ge1$ lies in $C_D$, no shorter directed path to the core can occur.  Hence $R_D(v_m)=m$ for each $m$, and in particular $R_D(v_k)=k$.  Also $v_k$ has depth
+\[
+\sigma_{2k+2}=d,
+\]
+because $d$ is the largest element of $\Sigma$.
+
+The same construction shows that the projected history of $v_k$ is precisely $\Sigma$: the seed contributes $\{\sigma_1,\sigma_2\}$ and the $m$th reconstructed edge contributes $\{\sigma_{2m+1},\sigma_{2m+2}\}$.  Thus
+\[
+\Theta_{D,d,k}(\operatorname{Rec}_{D,d,k}(\varepsilon,
+\Sigma))=(\varepsilon,\Sigma).
+\]
+
+Conversely, let $v=v_k$ be a depth-$d$ vertex with $R_D(v)=k$, and let
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D
+\]
+be its unique finite-distance chain.  Theorem~\ref{thm:history-disjointness} gives $\Sigma(v)\in\Sfam_{d,k}$.  Write
+\[
+\Sigma(v)=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}\}.
+\]
+The interval statement in Theorem~\ref{thm:history-disjointness} is stronger than disjointness: the seed lies in $[1,d_0]$, and the $m$th edge pair lies in the next interval $(d_{m-1},d_m]$.  Therefore the sorted projected history recovers the ordered data:
+\[
+\{\sigma_1,\sigma_2\}=\Seed(v_0),
+\]
+and for every $m=1,\ldots,k$,
+\[
+\sigma_{2m}=d_{m-1},
+\qquad
+\sigma_{2m+1}=d_{m-1}+t_m,
+\qquad
+\sigma_{2m+2}=d_m,
+\]
+where $t_m=\nuu(r_m+1)$ for $v_m=(r_m,d_m)$.
+
+Now reconstruct from
+\[
+\bigl(\operatorname{or}(v_0),\Sigma(v)\bigr).
+\]
+The reconstruction starts at the same oriented seed $v_0$.  At the $m$th step it uses the same target $v_{m-1}$ and the same preimage pair
+\[
+\{d_{m-1}+t_m,d_m\}.
+\]
+By the uniqueness clause in Theorem~\ref{thm:preimage}, the reconstructed source is exactly the original $v_m$.  Induction over $m$ gives
+\[
+\operatorname{Rec}_{D,d,k}\bigl(\operatorname{or}(v),\Sigma(v)\bigr)=v.
+\]
+Thus reconstruction and the history map are inverse bijections.
+\end{proof}
+
+\begin{corollary}[Quotient history bijection]\label{cor:quotient-bijection}
+For $D\ge3$, $k\ge1$, and $2\le d\le D$, the projected history map descends to a bijection
+\[
+\{v\in V_D:\depth(v)=d,
+\ R_D(v)=k\}/\tau_d
+\longrightarrow
+\Sfam_{d,k},
+\qquad
+[v]\longmapsto\Sigma(v).
+\]
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:top-bit-equivariance} shows that $\tau_d$ preserves the positive finite-distance layer, and Corollary~\ref{cor:history-top-bit-invariant} shows that $\Sigma$ is constant on each $\tau_d$-orbit.  Under the oriented bijection of Theorem~\ref{thm:oriented-bijection}, applying $\tau_d$ flips the terminal core orientation and leaves the projected history fixed.  Since $\tau_d$ is a fixed-point-free involution at depth $d\ge2$, quotienting identifies exactly the two signs and leaves precisely $\Sfam_{d,k}$.
+\end{proof}
+
+\begin{corollary}[Binomial layer laws]\label{cor:binomial-laws}
+For $D\ge3$ and $k\ge1$,
+\[
+\bigl|\{v\in V_D:\depth(v)=d,
+\ R_D(v)=k\}\bigr|
+=2\binom{d-1}{2k+1}
+\]
+for every depth $1\le d\le D$, with the convention that the binomial coefficient is zero when $2k+1>d-1$.  Consequently
+\[
+\bigl|\{v\in V_D:R_D(v)=k\}\bigr|
+=2\binom D{2k+2}.
+\]
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:oriented-bijection} gives
+\[
+\bigl|\{v\in V_D:\depth(v)=d,
+\ R_D(v)=k\}\bigr|=2|\Sfam_{d,k}|.
+\]
+Choosing a member of $\Sfam_{d,k}$ is the same as choosing the other $2k+1$ elements from $[d-1]$, so
+\[
+|\Sfam_{d,k}|=\binom{d-1}{2k+1}.
+\]
+This proves the depth-refined law.  Summing over $d$ gives
+\[
+\bigl|\{v\in V_D:R_D(v)=k\}\bigr|
+=2\sum_{d=1}^D\binom{d-1}{2k+1}
+=2\binom D{2k+2},
+\]
+by the hockey-stick identity.
+\end{proof}
+
+\begin{remark}[Rank-zero compatibility]
+The same orientation convention gives the rank-zero stable core classification
+\[
+C_D\cap V_d
+\cong
+\{+,-\}\times\Sfam_{d,0},
+\qquad
+2\le d\le D-2,
+\]
+because $\Sfam_{d,0}=\{\{a,d\}:1\le a<d\}$ and Corollary~\ref{cor:core-seeds} gives exactly the two oriented core vertices above each seed label.
+\end{remark}
+
+\section{Relation to the Collatz problem}\label{sec:collatz}
+
+The graph $G_D$ was designed from the valuation data of the odd Collatz/Syracuse passage
+\[
+X+1=2^tq,
+\qquad
+3^tq-1=2^\rho Y.
+\]
+That origin explains the formulas, but it is not needed to interpret the theorems.  The objects proved above are finite directed graphs built from residue classes and valuation labels.  The core theorem is a graph-theoretic classification of a strongly connected component.  The preimage-pair theorem is an algebraic enumeration of resolved sources.  The history bijection is an enumerative-combinatorial classification of distance layers.
+
+The results therefore should not be read as a proof of the classical Collatz conjecture.  A vertex $(r,d)$ is a residue class, not a positive integer.  The integer $1$ is represented by an infinite compatible tower of residue classes, and integer-orbit questions require additional lift data beyond the finite graph $G_D$.  In particular, the theorem
+\[
+R_D(v)<\infty\Longleftrightarrow v\notin\bdD
+\]
+is a finite graph statement about reaching the recurrent core after truncation; it is not an assertion that an integer orbit reaches $1$.
+
+What the graph does provide is a clean finite structure extracted from the Collatz valuation passage: adaptive residue refinement produces a recurrent core, pair-indexed preimages, a top-bit symmetry, and binomial distance layers.  In this sense the graph and the combinatorics are the subject, while Collatz is the origin story.
+
+\section{Further questions}
+
+The finite structure suggests several directions that are independent of any integer-orbit claim.
+
+\begin{question}[Boundary-free formulation]
+Can the truncation boundary be packaged into a cleaner inverse-limit or eventual-stability statement, so that the finite-$D$ theorem and the stable-depth theorem become two faces of a single object?
+\end{question}
+
+\begin{question}[Direct history invariant]
+The history coordinate is currently obtained by walking the unique forward chain to the core.  Is there a direct non-recursive formula for $\Sigma(v)$ in terms of the binary expansion of the source residue?
+\end{question}
+
+\begin{question}[Other affine valuation systems]
+For which odd affine systems does the same adaptive-residue construction produce a finite graph with a classifiable recurrent core and binomial or near-binomial distance layers?
+\end{question}
+
+\end{document}

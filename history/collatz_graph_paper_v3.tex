@@ -1,0 +1,491 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+\allowdisplaybreaks
+\setlist[itemize]{topsep=2pt,itemsep=1pt,leftmargin=1.5em}
+\setlist[enumerate]{topsep=2pt,itemsep=1pt,leftmargin=1.6em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\nuu}{\nu_2}
+\newcommand{\Ecal}{\mathcal E}
+\newcommand{\Rcal}{\mathcal R}
+\newcommand{\V}{\mathcal V}
+\newcommand{\GD}{G_D}
+\newcommand{\CD}{C_D}
+\newcommand{\bdD}{\partial_D}
+\newcommand{\depth}{\operatorname{depth}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\oddrep}{\operatorname{oddrep}}
+\newcommand{\Pre}{\mathsf{Pre}}
+\newcommand{\Seed}{\operatorname{Seed}}
+\newcommand{\Pair}{\mathsf P}
+\newcommand{\Sfam}{\mathcal S}
+\newcommand{\eps}{\varepsilon}
+
+\title{Adaptive Valuation Graphs, Binomial Distance Layers, and Weighted Histories\\
+\large A finite graph-theoretic structure from the \texorpdfstring{$3n+1$}{3n+1} valuation rule}
+\author{}
+\date{Third draft --- April 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For each integer $D\ge 1$ we define a finite directed graph $G_D$ on odd residue classes modulo powers of two up to depth $D$.  The graph is adaptive: a class whose two-adic valuation data do not yet determine a positive-depth transition refines by one binary digit, while every other class carries the valuation-labeled transition determined by that data.  We prove that $G_D$ has a unique nontrivial strongly connected component $C_D$, give an explicit description of it, and show that $|C_D|=D(D-2)$ for $D\ge3$.  We also prove that valuation-edge preimages of a target of depth $e$ are naturally indexed by pairs $e<i<j\le D$.  This pair indexing yields a canonical history coordinate for vertices at positive distance from $C_D$.  After quotienting by the top-bit involution, the depth-$d$, distance-$k$ layer is naturally bijective with
+\[
+\Sfam_{d,k}=\{\Sigma\subseteq[d]: d\in\Sigma,\ |\Sigma|=2k+2\},
+\]
+and hence the oriented layer has cardinality
+\[
+\bigl|\{v:\depth(v)=d,\ R_D(v)=k\}\bigr|=2\binom{d-1}{2k+1}\qquad(k\ge1).
+\]
+Finally, when valuation edges are weighted by $t\log_2 3-(t+\rho)$, the total weight of a positive-distance chain factors through the same quotient history as an explicit alternating-gap functional.  The Collatz map motivates the local valuation rule and this particular weight, but the results are finite graph theory, weighted digraphs, and enumerative combinatorics.
+\end{abstract}
+
+\section{Introduction}
+
+This paper studies a finite directed graph built from odd residue classes modulo powers of two.  The graph is not drawn at one fixed modulus.  Instead, it refines a residue class only when the currently visible two-adic valuation data are insufficient to define a positive-depth transition.  This adaptive rule produces a finite graph with a rigid structure: a single recurrent core, a small truncation boundary, pair-indexed valuation preimages, and binomial distance layers.  The same history coordinate also linearizes a natural additive weight on valuation chains.
+
+The construction comes from the following two-adic valuation rule.  For an odd integer $X$, write
+\[
+X+1=2^tq,\qquad q\text{ odd},
+\]
+and then
+\[
+3^tq-1=2^\rho Y,\qquad Y\text{ odd}.
+\]
+The finite graph asks what can be determined from the residue class of $X$ modulo $2^d$.  If the class already determines the valuation data $(t,\rho)$ up to a positive target depth, the graph follows the induced transition.  If not, it asks for one more binary digit.
+
+The main point is that the theorems below are not integer-orbit statements.  The graph and its combinatorics are the subject.  Collatz is the source of the valuation rule.
+
+\section{The graph}\label{sec:graph}
+
+For $d\ge1$, let $V_d$ be the set of odd residues modulo $2^d$, represented by odd integers $1\le r<2^d$.  A vertex of $G_D$ is a pair $(r,d)$ with $1\le d\le D$ and $r\in V_d$; write $\depth(r,d)=d$.  Thus
+\[
+V(G_D)=\{(r,d):1\le d\le D,\ r\equiv1\pmod2,\ 1\le r<2^d\}.
+\]
+If $x$ is odd modulo $2^m$, let $\oddrep_m(x)$ denote its canonical representative in $\{1,3,\ldots,2^m-1\}$.
+
+\subsection{Exceptional residues and valuation edges}
+
+For $1\le t<d$, define
+\[
+r_{d,t}\equiv 2^t(3^t)^{-1}-1\pmod {2^d},
+\]
+where the inverse is taken modulo $2^{d-t}$ and the odd representative modulo $2^d$ is chosen.  Also set
+\[
+r_{d,d}=2^d-1,
+\qquad
+\Ecal_d=\{r_{d,1},\ldots,r_{d,d}\}.
+\]
+The residues in $\Ecal_d$ are distinct, since $\nuu(r_{d,t}+1)=t$ for $t<d$ and $\nuu(r_{d,d}+1)=d$.  We call them exceptional.  All other residues at depth $d$ are regular.
+
+The edges of $G_D$ are as follows.
+
+If $(r,d)$ is exceptional and $d<D$, draw the two refinement edges
+\[
+(r,d)\to(r,d+1),\qquad (r,d)\to(r+2^d,d+1).
+\]
+If $d=D$, no refinement edge is drawn.
+
+If $(r,d)$ is regular, put
+\[
+t=\nuu(r+1),\qquad q=\frac{r+1}{2^t},\qquad
+\rho=\nuu(3^tq-1),\qquad e=d-t-\rho.
+\]
+Lemma~\ref{lem:local} below implies $e\ge1$.  Set
+\[
+y=\frac{3^tq-1}{2^\rho},\qquad s=\oddrep_e(y),
+\]
+and draw the valuation edge
+\[
+(r,d)\to(s,e).
+\]
+We denote this partial map by $F(r,d)=(s,e)$.
+
+The truncation boundary is
+\[
+\bdD=\{(r,D):r\in\Ecal_D\}\cup\{(2^{D-1}-1,D-1)\}.
+\]
+The second term is the maximal exceptional vertex one level below the cutoff.
+
+\begin{lemma}[Local valuation algebra]\label{lem:local}
+The following hold.
+\begin{enumerate}
+\item A regular vertex has a valid valuation edge: $e=d-t-\rho\ge1$.
+\item Every exceptional vertex at depth $d>1$ reduces to an exceptional vertex at depth $d-1$.
+\item If $1\le t<d$, then the two children of $(r_{d,t},d)$ consist of one exceptional child of type $t$ and one regular child whose valuation edge has target $(1,1)$.
+\item The two children of the maximal exceptional vertex $(2^d-1,d)$ are exceptional of types $d$ and $d+1$ at depth $d+1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+For a regular vertex, $e\le0$ would mean
+\[
+3^tq\equiv1\pmod {2^{d-t}},
+\]
+so $r=2^tq-1$ would be the exceptional residue of type $t$, a contradiction.
+
+The parent statement follows immediately from the congruence defining $r_{d,t}$; the case $t=d$ reduces to the maximal exceptional residue at depth $d-1$.
+
+For the child statement, write $r=r_{d,t}$ with $t<d$ and $q=(r+1)/2^t$.  The two depth-$(d+1)$ lifts replace $q$ by $q$ and $q+2^{d-t}$.  Since
+\[
+3^t(q+2^{d-t})-1=(3^tq-1)+3^t2^{d-t},
+\]
+exactly one lift satisfies the stronger congruence modulo $2^{d+1-t}$; this is the exceptional child of type $t$.  The other has exact valuation $\rho=d-t$, hence target depth $(d+1)-t-(d-t)=1$, so it maps to $(1,1)$.  Finally, the children of $2^d-1$ are $2^d-1$ and $2^{d+1}-1$, which are the exceptional residues of types $d$ and $d+1$ at depth $d+1$.
+\end{proof}
+
+A regular vertex is a \emph{direct return} if its valuation edge lands at $(1,1)$.  Let $\Rcal_d$ be the set of direct returns at depth $d$.  Lemma~\ref{lem:local} gives
+\[
+|\Rcal_d|=\max(d-2,0),
+\]
+and for $d\ge3$ these are exactly the regular children of the non-maximal exceptional vertices at depth $d-1$.
+
+\section{The recurrent core}\label{sec:core}
+
+For $D\ge3$, define
+\[
+K_D=\left(\{(r,d):r\in\Ecal_d,\ 1\le d\le D\}\cup\bigcup_{d=1}^D\Rcal_d\right)\setminus\bdD.
+\]
+Thus $K_D$ consists of the exceptional vertices and direct returns, except for the truncation boundary.
+
+\begin{theorem}[Core theorem]\label{thm:core}
+For $D\ge3$, $G_D$ has a unique nontrivial strongly connected component $C_D$, and
+\[
+C_D=K_D.
+\]
+Moreover
+\[
+|C_D|=D(D-2),
+\]
+and a vertex reaches $C_D$ if and only if it is not in $\bdD$.
+\end{theorem}
+
+\begin{proof}
+First, $K_D$ is strongly connected.  Every direct return maps to $(1,1)$.  If an exceptional vertex in $K_D$ has non-maximal type, Lemma~\ref{lem:local} gives a direct-return child and hence a path to $(1,1)$.  If it is maximal, it is not in the boundary, so its depth is at most $D-2$; one refinement step reaches a non-maximal exceptional child, and then the previous case applies.  Conversely, every exceptional vertex is reachable from $(1,1)$ by repeatedly taking exceptional parents, and every direct return is a refinement child of an exceptional vertex.  Hence $(1,1)$ reaches all of $K_D$.
+
+Now let $v\notin K_D\cup\bdD$.  Then $v$ is regular and not a direct return.  Its unique valuation edge strictly lowers depth, since $t\ge1$ and $\rho\ge1$.  Iterating therefore reaches either $K_D$ or the boundary.  It cannot first hit the boundary: every valuation edge from a source of depth at most $D$ has target depth at most $D-2$, while the boundary lies only in depths $D-1$ and $D$.  Hence every non-boundary vertex reaches $K_D$.
+
+The boundary does not reach $K_D$: terminal exceptional vertices have no outgoing refinement edges, and the extra boundary vertex $(2^{D-1}-1,D-1)$ refines only to terminal exceptional vertices.  Finally, outside $K_D$ any path either enters the boundary trap or follows valuation edges of strictly decreasing depth, so no further directed cycle is possible.  Thus $K_D$ is the unique nontrivial strongly connected component.
+
+For the count,
+\[
+\sum_{d=1}^D |\Ecal_d|=\sum_{d=1}^D d=\frac{D(D+1)}2,
+\]
+and
+\[
+\sum_{d=1}^D |\Rcal_d|=\sum_{d=3}^D(d-2)=\frac{(D-1)(D-2)}2.
+\]
+Their union has size $D^2-D+1$.  Removing the $D$ terminal exceptional vertices and the additional boundary vertex gives
+\[
+|C_D|=D^2-D+1-(D+1)=D(D-2).
+\]
+\end{proof}
+
+Let
+\[
+R_D(v)=\dist(v,C_D)
+\]
+when $v$ reaches $C_D$, and $R_D(v)=\infty$ otherwise.  Theorem~\ref{thm:core} says that $R_D(v)<\infty$ exactly off the boundary.  If $R_D(v)=k>0$, then $v$ is regular and not a direct return, and repeated valuation edges give a unique chain
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D.
+\]
+
+\section{Preimages and pair indexing}\label{sec:preimages}
+
+The next theorem is the basic enumerative mechanism.  It is target-first: fix a target and solve for all valuation-edge sources.
+
+\begin{theorem}[Preimage-pair theorem]\label{thm:preimage}
+Fix a target vertex $u=(s,e)\in V(G_D)$.  The valuation-edge preimages of $u$ are naturally indexed by pairs
+\[
+e<i<j\le D.
+\]
+For the pair $(i,j)$, set
+\[
+t=i-e,
+\qquad
+\rho=j-i,
+\qquad
+ d=j.
+\]
+Then the unique source is obtained by solving
+\[
+q\equiv3^{-t}(1+2^\rho s)\pmod {2^{e+\rho}}
+\]
+and setting
+\[
+\Pre_{i,j}(s,e)=\bigl(\oddrep_j(2^tq-1),j\bigr).
+\]
+Consequently $|F^{-1}(s,e)|=\binom{D-e}{2}$.
+\end{theorem}
+
+\begin{proof}
+If a valuation edge has source depth $d$ and target depth $e$, then
+\[
+d=e+t+\rho.
+\]
+Thus $i=e+t$ and $j=d$ satisfy $e<i<j\le D$.
+
+Conversely, fix $e<i<j\le D$ and put $t=i-e$, $\rho=j-i$.  A source with target residue $s$ must satisfy
+\[
+3^tq-1\equiv2^\rho s\pmod {2^{e+\rho}},
+\]
+or equivalently
+\[
+q\equiv3^{-t}(1+2^\rho s)\pmod {2^{e+\rho}}.
+\]
+This congruence has a unique odd solution modulo $2^{e+\rho}$.  With $r=\oddrep_j(2^tq-1)$, one has $\nuu(r+1)=t$.  Since $s$ is odd, the valuation of $3^tq-1$ is exactly $\rho$, and division by $2^\rho$ gives target residue $s$ modulo $2^e$.  The source is regular because $e\ge1$.  Uniqueness follows from the same congruence for $q$.
+\end{proof}
+
+The pair attached to a valuation edge $v=(r,d)\to(s,e)$ is therefore
+\[
+\Pair(v)=\{e+\nuu(r+1),d\}.
+\]
+Each preimage step adds two depths: an intermediate valuation depth and the source depth.
+
+\section{Histories and binomial layers}\label{sec:histories}
+
+For $d\ge2$, let $\tau_d$ be the top-bit involution
+\[
+\tau_d(r,d)=
+\begin{cases}
+(r+2^{d-1},d),&r<2^{d-1},\\
+(r-2^{d-1},d),&r>2^{d-1}.
+\end{cases}
+\]
+It exchanges the two depth-$d$ lifts of the same residue modulo $2^{d-1}$.
+
+\begin{proposition}[Stable core seeds]\label{prop:seeds}
+For $2\le d\le D-2$, the quotient $(C_D\cap V_d)/\tau_d$ is canonically labeled by the two-element sets
+\[
+\{a,d\},\qquad 1\le a<d.
+\]
+There are two oriented core vertices above each label.
+\end{proposition}
+
+\begin{proof}
+For $1\le a\le d-2$, the two children of the exceptional vertex of type $a$ at depth $d-1$ consist of the exceptional vertex of type $a$ at depth $d$ and its direct-return sibling.  These two children differ by $2^{d-1}$, so they form one $\tau_d$-orbit.  The remaining orbit comes from the two children of the maximal exceptional vertex at depth $d-1$, namely the exceptional vertices of types $d-1$ and $d$.  Since $d\le D-2$, no boundary vertex is involved.  These $d-1$ two-element orbits exhaust $C_D\cap V_d$.
+\end{proof}
+
+If $v=v_k\to\cdots\to v_0\in C_D$ is the unique chain for a vertex of positive finite distance, write $v_m=(r_m,d_m)$.  The endpoint $v_0$ has stable depth: $2\le d_0\le D-2$, because the final edge is not a direct return and every valuation edge lowers depth by at least two.  Let
+\[
+\Seed(v_0)=\{a,d_0\}
+\]
+be its core seed label from Proposition~\ref{prop:seeds}.  Define the projected history
+\[
+\Sigma(v)=\Seed(v_0)\cup\bigcup_{m=1}^k\{d_{m-1}+\nuu(r_m+1),d_m\}.
+\]
+For a stable core vertex itself, set $\Sigma(v_0)=\Seed(v_0)$.
+
+\begin{lemma}[History intervals]\label{lem:historyintervals}
+If $v$ has finite distance $k$ and depth $d$, then the union defining $\Sigma(v)$ is disjoint.  For $k\ge1$,
+\[
+\Sigma(v)\subseteq[d],\qquad d\in\Sigma(v),\qquad |\Sigma(v)|=2k+2.
+\]
+\end{lemma}
+
+\begin{proof}
+For the edge $v_m\to v_{m-1}$, put
+\[
+t_m=\nuu(r_m+1),\qquad \rho_m=\nuu(3^{t_m}q_m-1).
+\]
+Then
+\[
+d_m=d_{m-1}+t_m+\rho_m,
+\]
+so
+\[
+\{d_{m-1}+t_m,d_m\}\subset(d_{m-1},d_m].
+\]
+The seed lies in $[1,d_0]$.  Inducting along the chain, each preimage step appends two new elements in the next interval $(d_{m-1},d_m]$.  Hence the union is disjoint, lies in $[d]$, contains the final depth $d$, and has cardinality $2+2k$.
+\end{proof}
+
+For $k\ge1$, define
+\[
+\Sfam_{d,k}=\{\Sigma\subseteq[d]:d\in\Sigma,\ |\Sigma|=2k+2\}.
+\]
+
+\begin{theorem}[History bijection]\label{thm:bijection}
+For $D\ge3$, $k\ge1$, and $1\le d\le D$, the map
+\[
+v\longmapsto (\eps(v),\Sigma(v))
+\]
+is a natural bijection
+\[
+\{v:\depth(v)=d,\ R_D(v)=k\}
+\longrightarrow
+\{+,-\}\times\Sfam_{d,k},
+\]
+where $\eps(v)$ is the orientation of the terminal core seed.  Consequently
+\[
+\bigl|\{v:\depth(v)=d,\ R_D(v)=k\}\bigr|=2\binom{d-1}{2k+1}.
+\]
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:historyintervals} shows that the map lands in $\{+,-\}\times\Sfam_{d,k}$.
+
+To reconstruct, take $(\eps,\Sigma)$ with
+\[
+\Sigma=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}=d\}.
+\]
+Start with the oriented core vertex labeled by $\{\sigma_1,\sigma_2\}$ and orientation $\eps$.  At step $m=1,\ldots,k$, use Theorem~\ref{thm:preimage} to take the unique valuation-edge preimage of the current target of depth $\sigma_{2m}$ indexed by the pair
+\[
+\sigma_{2m}<\sigma_{2m+1}<\sigma_{2m+2}.
+\]
+This constructs a chain whose final source has depth $d$.
+
+Each reconstructed edge has target depth at least $2$, so no reconstructed source is a direct return; hence the first time the chain reaches the core is its prescribed endpoint.  Thus the final source has distance $k$.  The construction is inverse to the history map because Theorem~\ref{thm:preimage} gives a unique source for each target and pair.
+
+The count follows from
+\[
+|\Sfam_{d,k}|=\binom{d-1}{2k+1},
+\]
+since $d$ is forced to lie in $\Sigma$.
+\end{proof}
+
+The top-bit quotient removes the two orientations.  The needed equivariance is elementary: if a valuation edge has target depth $e\ge2$, then replacing the source by its top-bit flip changes $q$ to $q\pm2^{d-1-t}$, preserves the exact valuations $(t,\rho)$, and flips the top bit of the target.  Thus valuation chains commute with $\tau$ as long as no direct return is involved.  Positive-distance chains have this property.
+
+\begin{corollary}[Quotient layers]\label{cor:quotient}
+For $k\ge1$ and $d\ge2$,
+\[
+\{v:\depth(v)=d,\ R_D(v)=k\}/\tau_d
+\cong
+\Sfam_{d,k}.
+\]
+Equivalently, summing over $d\le D$,
+\[
+\bigl|\{v:R_D(v)=k\}\bigr|=2\binom{D}{2k+2}.
+\]
+\end{corollary}
+
+
+\section{Weighted histories}\label{sec:weighted}
+
+The history coordinate is not only a counting device.  It also records a natural additive statistic on valuation chains.  In this section we regard $G_D$ as a weighted directed graph by assigning a real weight to each valuation edge from its valuation label.
+
+Put
+\[
+\alpha=\log_2 3.
+\]
+If $v=(r,d)$ is regular and $F(v)=u=(s,e)$, write
+\[
+t=\nuu(r+1),\qquad q=\frac{r+1}{2^t},\qquad \rho=\nuu(3^tq-1).
+\]
+Thus $d=e+t+\rho$.  Define the edge weight
+\[
+\omega(v,u)=t\alpha-(t+\rho)=t\alpha-(d-e).
+\]
+Equivalently, if the pair of the edge is
+\[
+\Pair(v)=\{i,j\},\qquad e<i<j=d,
+\]
+then
+\[
+\omega(v,u)=(i-e)\alpha-(j-e).
+\]
+
+Now let $v$ have positive finite distance $R_D(v)=k$, and write its valuation chain as
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D.
+\]
+The total chain weight is
+\[
+\Omega(v)=\sum_{m=1}^k \omega(v_m,v_{m-1}).
+\]
+The endpoint core vertex carries no weight in this definition; only the valuation edges in the distance chain are counted.
+
+For a history
+\[
+\Sigma=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}=d\}\in\Sfam_{d,k},
+\]
+define the alternating-gap sum
+\[
+T(\Sigma)=\sum_{m=1}^k(\sigma_{2m+1}-\sigma_{2m})
+\]
+and the history weight
+\[
+\Omega(\Sigma)=T(\Sigma)\alpha-(d-\sigma_2).
+\]
+
+\begin{theorem}[Weight factorization through histories]\label{thm:weightfactor}
+Let $D\ge3$, $k\ge1$, and let $v$ be a vertex with $R_D(v)=k$ and $\depth(v)=d$.  Then
+\[
+\Omega(v)=\Omega(\Sigma(v)).
+\]
+Consequently the total chain weight depends only on the quotient history $\Sigma(v)$ and is independent of the orientation $\eps(v)$.
+\end{theorem}
+
+\begin{proof}
+Write the distance chain as
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D,
+\]
+and put $v_m=(r_m,d_m)$.  For the edge $v_m\to v_{m-1}$, let
+\[
+t_m=\nuu(r_m+1),\qquad q_m=\frac{r_m+1}{2^{t_m}},\qquad \rho_m=\nuu(3^{t_m}q_m-1).
+\]
+By the definition of the history coordinate, if
+\[
+\Sigma(v)=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}=d\},
+\]
+then the $m$th valuation preimage step has
+\[
+d_{m-1}=\sigma_{2m},\qquad d_{m-1}+t_m=\sigma_{2m+1},\qquad d_m=\sigma_{2m+2}.
+\]
+Therefore
+\[
+t_m=\sigma_{2m+1}-\sigma_{2m},
+\qquad
+ t_m+\rho_m=d_m-d_{m-1}=\sigma_{2m+2}-\sigma_{2m}.
+\]
+Summing the edge weights gives
+\begin{align*}
+\Omega(v)
+&=\sum_{m=1}^k\bigl(t_m\alpha-(t_m+\rho_m)\bigr)\\
+&=\alpha\sum_{m=1}^k(\sigma_{2m+1}-\sigma_{2m})
+  -\sum_{m=1}^k(\sigma_{2m+2}-\sigma_{2m})\\
+&=T(\Sigma(v))\alpha-(\sigma_{2k+2}-\sigma_2)\\
+&=T(\Sigma(v))\alpha-(d-\sigma_2).
+\end{align*}
+This is exactly $\Omega(\Sigma(v))$.  Since $\Sigma(v)$ is unchanged by switching the top-bit orientation, the total chain weight is independent of $\eps(v)$.
+\end{proof}
+
+\begin{corollary}[Weighted quotient layers]\label{cor:weightedquotient}
+For $k\ge1$ and $d\ge2$, the quotient bijection
+\[
+\{v:\depth(v)=d,\ R_D(v)=k\}/\tau_d\cong\Sfam_{d,k}
+\]
+is weight-preserving when the left side is weighted by total chain weight and $\Sfam_{d,k}$ is weighted by $\Omega(\Sigma)$.
+\end{corollary}
+
+\begin{remark}
+The statistic $T(\Sigma)$ selects the odd-numbered gaps after the core seed depth $\sigma_2$, while $d-\sigma_2$ is the total depth gained after the seed.  Thus the weight is an alternating-gap functional on the same subsets that index the binomial distance layers.  No information from the orientation coordinate is needed.
+\end{remark}
+
+\section{Relation to Collatz}\label{sec:collatz}
+
+The rule used to define $G_D$ is extracted from a residue-class model of the odd Collatz/Syracuse dynamics.  In that model one studies the odd-to-odd valuation update
+\[
+X+1=2^tq,
+\qquad
+3^tq-1=2^\rho Y.
+\]
+This origin explains why the formulas occur.  It also explains the particular edge weight $t\log_2 3-(t+\rho)$ used in Section~\ref{sec:weighted}.  Neither point is needed for the finite graph theorems: the graph, its layers, and its weighted histories are the objects of study here.
+
+The statements proved here do not assert that integer Collatz orbits reach $1$.  A vertex $(r,d)$ is a residue class, not an integer.  The integer $1$ is represented by an infinite compatible tower of residue classes, and integer dynamics require lift data beyond any fixed $G_D$.  What the graph supplies is a finite, classifiable combinatorial object: adaptive two-adic refinement produces a recurrent core, pair-indexed valuation preimages, a top-bit symmetry, binomial distance layers, and a history-level weight functional.
+
+\end{document}

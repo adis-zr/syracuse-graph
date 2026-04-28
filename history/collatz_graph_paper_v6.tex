@@ -1,0 +1,837 @@
+\documentclass[11pt]{amsart}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+
+\allowdisplaybreaks
+\setlist[itemize]{topsep=2pt,itemsep=1pt,leftmargin=1.5em}
+\setlist[enumerate]{topsep=2pt,itemsep=1pt,leftmargin=1.6em}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\nuu}{\nu_2}
+\newcommand{\Ecal}{\mathcal E}
+\newcommand{\Rcal}{\mathcal R}
+\newcommand{\V}{\mathcal V}
+\newcommand{\GD}{G_D}
+\newcommand{\CD}{C_D}
+\newcommand{\bdD}{\partial_D}
+\newcommand{\depth}{\operatorname{depth}}
+\newcommand{\dist}{\operatorname{dist}}
+\newcommand{\oddrep}{\operatorname{oddrep}}
+\newcommand{\Pre}{\mathsf{Pre}}
+\newcommand{\Seed}{\operatorname{Seed}}
+\newcommand{\Pair}{\mathsf P}
+\newcommand{\Sfam}{\mathcal S}
+\newcommand{\eps}{\varepsilon}
+
+\title{A finite graph from the 2-adic valuation of the \texorpdfstring{$3n+1$}{3n+1} map}
+\author{Aditya Sriram}
+
+\address{Independent Researcher}
+\email{adi.sriram.math@gmail.com}
+\date{April 2026}
+
+\begin{document}
+\begin{abstract}
+\setlength{\parskip}{0.6em} 
+\setlength{\parindent}{0pt} 
+
+This paper introduces a finite directed graph $G_D$ inspired by the $3n+1$ map.
+
+The vertices are pairs $(r,d)$, where $1\le d\le D$ and $r$ is an odd 
+residue modulo $2^d$. An edge $(r,d) \longrightarrow (s,e)$ encodes the
+transition to the next odd residue class $(s,e)$ via the valuation data 
+at $(r,d)$. Each such edge carries a weight that measures the logarithmic 
+drift of the odd-to-odd map.
+
+The main result is that $G_D$ has a unique nontrivial strongly connected
+component $C_D$ of size $D(D-2)$ for $D\ge 3$, and each depth-$d$,
+distance-$k$ layer outside $C_D$ is in bijection with 
+\[
+\Sfam_{d,k} = \{\Sigma\subseteq[d] : d\in\Sigma,\ |\Sigma|=2k+2\}.
+\]
+\end{abstract}
+\maketitle
+
+
+\section{Introduction}\label{sec:introduction}
+The $3n+1$ problem is easy to state.  Given a positive integer $n$, define
+\[
+T(n)=
+\begin{cases}
+(3n+1)/2, & n\text{ odd},\\
+n/2, & n\text{ even}.
+\end{cases}
+\]
+Pick any positive integer.  Iterate.  The conjecture is that you always
+reach~$1$.  Nobody has proved it.  The standard references are Lagarias'
+survey~\cite{Lagarias1985} and the annotated bibliographies that
+followed~\cite{LagariasAnnotated1999, LagariasAnnotated2009, Lagarias2010}.
+
+One natural picture comes from running the map backwards.  Every integer has a
+unique successor, so the predecessors form a tree.  Its branching and
+stopping-time statistics have been studied
+extensively~\cite{ApplegateLagarias1995, ApplegateLagarias2003, Wirsching1998}.
+
+A second picture comes from passing to the $2$-adic integers.  The odd-to-odd
+map
+\[
+S(x)=\frac{3x+1}{2^{\nu_2(3x+1)}}
+\]
+extends continuously to $\mathbb{Z}_2$.  Bernstein and Lagarias constructed a
+conjugacy map that intertwines the $2$-adic shift with $S$ and analyzed the
+induced permutations modulo~$2^n$~\cite{Bernstein1994,
+BernsteinLagarias1996}.  The $2$-adic valuation $\nu_2(3x+1)$ is the
+structural datum throughout this line of work.
+
+Now here is the gap.
+
+In integer space, the predecessor picture is a tree.  In $2$-adic residue
+space, it isn't.  A residue class modulo~$2^d$ can have multiple predecessors
+at higher depth, and the dynamics between classes can cycle.  Laarhoven and
+de~Weger made this precise: at a fixed modulus~$2^d$, the $3n+1$ graph on
+residue classes is isomorphic to the binary de~Bruijn graph, and the infinite
+$2$-adic limit recovers the Bernstein--Lagarias
+conjugacy~\cite{LaarhovenDeWeger2013}.
+
+But that fixes the modulus.  What happens when a residue class that cannot yet
+determine its transition is refined to the next depth instead?  I did not find
+that question taken up in the literature.
+
+So I ran the experiment.  At depth~$d$, let a vertex $(r,d)$ represent all odd
+integers congruent to $r$ modulo~$2^d$.  Sometimes the class already
+determines the next odd-to-odd transition completely, and it gets a forward
+edge to a lower-depth class.  Sometimes the visible bits are not enough, and
+the class must be split at depth $d+1$.  The result is a finite directed graph
+$G_D$ on vertices at varying depths.  It is neither the predecessor tree nor
+the fixed-modulus de~Bruijn graph.  It has cycles.
+
+The structure turned out to be rigid.  At each depth~$d$, exactly $d$ residue
+classes are \emph{exceptional}: the ones where the valuation data are not yet
+resolved.  That count being exactly~$d$ was not assumed; it emerged from initial
+computation and is proved in Section~\ref{sec:core}.
+
+The exceptional residues have an explicit algebraic form. Their
+children at depth $d+1$ split one-for-one into a new exceptional residue and a
+regular residue that maps straight to the base class $(1,1)$. The recurrent
+part of the graph assembles into a single strongly connected component of
+size~$D(D-2)$.
+
+The valuation data turned out to be load-bearing.  The pair of exponents that
+determine each edge also carry the Syracuse log-drift that appears throughout
+the $3n+1$ literature~\cite{Terras1976, Everett1977, Eliahou1993, Tao2022};
+the precise connection is worked out in Section~\ref{sec:collatz}.
+
+Representing an infinite-set problem in a finite structure buys you nothing
+unless the finite object comes with a natural correspondence to the data you
+want to track~\cite{Stanley2012, FlajoletSedgewick2009}.  By proving the
+bijection, structural facts about the adaptive two-adic residue dynamics become
+directly readable from the combinatorics of subsets of~$[d]$.  For each
+cutoff~$D$, the graph~$G_D$ has a unique nontrivial strongly connected
+component~$C_D$, and every vertex outside~$C_D$ carries a canonical coordinate
+built from iterated valuation-preimage pairs.  After the natural top-bit
+quotient, the depth-$d$, distance-$k$ layer is in canonical bijection with
+\[
+\Sfam_{d,k}=\{\Sigma\subseteq[d]:d\in\Sigma,\ |\Sigma|=2k+2\}.
+\]
+$3n+1$ is the origin of the construction, but what is proved is a finite
+graph-theoretic and enumerative statement about adaptive two-adic valuation
+data.  It identifies a finite object, classifies it completely, and shows that
+its weighted structure faithfully encodes the logarithmic drift that runs
+through the $3n+1$ literature.
+
+\section{The valuation signature}\label{sec:syracuse}
+The graph encodes one arithmetic operation. The grouped odd-to-odd
+Collatz step and its two-adic bookkeeping. Both ideas are standard,
+see Wirsching~\cite{Wirsching1998}.
+
+Given an odd integer $r$, write $r+1=2^tq$ with $q$ odd.  The grouped
+step produces
+\[
+3^t q - 1 = 2^\rho Y,
+\qquad
+\text{where } Y \text{ is odd and } \rho = \nu_2(3^t q - 1).
+\]
+
+We call the pair $(t,\rho)$ the \emph{valuation signature}: $t$
+halvings from the binary structure of $r+1$, and $\rho$ more stripped
+after the multiplication.
+
+Now suppose $r$ is known only modulo $2^d$.  You have $d$ bits of
+precision to work with.  The class pins down $t$ exactly when
+$\nu_2(r+1)<d$, and pins down $\rho$ exactly when
+$3^tq\not\equiv1\pmod{2^{d-t}}$.  When both are determined, the
+target depth is
+\[
+e=d-t-\rho.
+\]
+The $d$ bits of input precision are consumed: $t$ by the structure of
+$r+1$ and $\rho$ by the structure of $3^tq-1$.  What remains is $e$.
+
+The graph is built from this quantity.
+
+\section{The graph}\label{sec:graph}
+\subsection{Vertices}
+A vertex of $G_D$ is a pair $(r,d)$ with $1\le d\le D$ and $r$ an odd
+residue modulo $2^d$.  When $e<1$, the class has not resolved the
+valuation signature. It is replaced by:
+\[
+(r,d)\;\longmapsto\;(r,d+1),\quad (r+2^d,d+1).
+\]
+
+\subsection{Edges}
+When $e\ge1$, the grouped step is well-defined.  Set
+$y=(3^tq-1)/2^\rho$ and $s=\oddrep_e(y)$, the odd representative
+of $y$ modulo $2^e$.  The edge is
+\[
+(r,d)\to(s,e).
+\]
+
+\section{Local structure}
+This section proves the structural constraint behind the bijection: unresolved residue classes split predictably and subsequently resolve.
+
+The condition $e\le0$ means $3^tq\equiv1\pmod{2^{d-t}}$: the
+remaining $d-t$ bits of precision are exactly absorbed, and there is
+nothing left to read $\rho$ from.  Since $r+1=2^tq$, this forces
+\[
+r_{d,t}\equiv 2^t(3^t)^{-1}-1\pmod{2^d},
+\qquad 1\le t<d.
+\]
+Set $r_{d,d}=2^d-1$.  These are the
+\emph{unresolved residues}
+$\Ecal_d=\{r_{d,1},\ldots,r_{d,d}\}$, and they are distinct since
+$\nuu(r_{d,t}+1)=t$.  Every other residue is \emph{resolved}.
+
+An unresolved residue of type $t<d$ is \emph{non-maximal}; the
+remaining case $r_{d,d}=2^d-1$ is \emph{maximal}.
+
+\begin{lemma}[Direct returns]\label{lem:directreturns}
+Every non-maximal unresolved vertex, when refined, produces one child
+that stays unresolved and one resolved child that maps to $(1,1)$.
+The maximal vertex produces two unresolved children.
+Call the resolved child a \emph{direct return}.  At depth $d$ there are
+exactly $\max(d-2,0)$ direct returns.
+\end{lemma}
+
+\begin{proof}
+For the non-maximal case, the two depth-$(d+1)$ lifts of
+$(r_{d,t},d)$ replace $q$ by $q$ and $q+2^{d-t}$.  Since
+\[
+3^t(q+2^{d-t})-1=(3^tq-1)+3^t\cdot 2^{d-t},
+\]
+exactly one satisfies the stronger congruence modulo $2^{d+1-t}$;
+that is the unresolved child of type~$t$.  The other has $\rho=d-t$,
+giving target depth~$1$.
+
+For the maximal case, the two children of $(2^d-1,d)$ are $2^d-1$ and
+$2^{d+1}-1$: the unresolved residues of types $d$ and $d+1$ at
+depth $d+1$.  Neither is a direct return.
+
+The non-maximal unresolved vertices at depth $d-1$ are those of types
+$1,\ldots,d-2$, each contributing one direct return at depth~$d$.
+The count is $\max(d-2,0)$.
+\end{proof}
+
+\section{The unique nontrivial SCC}\label{sec:core}
+The graph $G_D$ has one nontrivial strongly connected component.
+Every vertex either belongs to it, flows into it, or is trapped on
+the boundary.  This section identifies the component, counts it, and
+shows that no other cycle exists.
+
+First, the boundary.  Lemma~\ref{lem:directreturns} guarantees that
+every unresolved vertex produces at least one unresolved child at the
+next depth.  At depth $D$, there is no next depth.  The unresolved
+vertices of types $1,\ldots,D-1$ have no outgoing valuation edges and
+no room to refine; call them \emph{terminal}.  The vertex
+$(2^{D-1}-1,D-1)$ refines only to terminal vertices.  Together these
+$D$ vertices form the boundary $\bdD$.  Nothing leaves it.
+
+\begin{theorem}[SCC theorem]\label{thm:core}
+For $D\ge3$, $G_D$ has a unique nontrivial strongly connected
+component $C_D$.  It consists of all unresolved vertices and direct
+returns outside the boundary, and
+\[
+|C_D|=D(D-2).
+\]
+A vertex reaches $C_D$ if and only if it is not in $\bdD$.
+\end{theorem}
+
+\begin{proof}
+The argument has three parts: the claimed set is strongly connected,
+everything outside it flows in, and no other cycle exists.
+
+\medskip\noindent\emph{Strong connectivity.}
+Every direct return maps to $(1,1)$.  Every non-maximal unresolved
+vertex in $C_D$ has a direct-return child
+(Lemma~\ref{lem:directreturns}), and hence a path to $(1,1)$.  Every
+maximal unresolved vertex in $C_D$ has depth at most $D-2$, since it
+is not on the boundary; one refinement step produces a non-maximal
+unresolved child, and the previous case applies.  Conversely, $(1,1)$
+reaches every unresolved vertex by repeatedly taking unresolved parents
+--- the defining congruence at depth $d$ restricts to the same
+congruence at depth $d-1$ --- and every direct return is a refinement
+child of an unresolved vertex.  So $(1,1)$ reaches all of $C_D$.
+
+\medskip\noindent\emph{Absorption.}
+Let $v$ be a resolved vertex that is not a direct return.  It has a
+valuation edge: the condition $e\le0$ would force $v$ to be unresolved.
+That edge strictly lowers depth, since $t\ge1$ and $\rho\ge1$.
+Iterating reaches either $C_D$ or the boundary.  It cannot hit the
+boundary first: every valuation edge from depth at most $D$ has target
+depth at most $D-2$, while the boundary sits at depths $D-1$ and $D$.
+
+\medskip\noindent\emph{No other cycles.}
+Outside $C_D$, every path either enters the boundary or follows
+valuation edges of strictly decreasing depth.  Neither admits a cycle.
+
+\medskip\noindent\emph{Count.}
+The unresolved vertices across all depths number
+$\sum_{d=1}^D d = D(D+1)/2$.  The direct returns number
+$\sum_{d=3}^D(d-2) = (D-1)(D-2)/2$.  Their union has size $D^2-D+1$.
+The boundary removes $D$ terminal unresolved vertices and one
+additional vertex, giving $|C_D|=D^2-D+1-(D+1)=D(D-2)$.
+\end{proof}
+
+\section{Preimages and pair indexing}\label{sec:preimages}
+Fix a target vertex and solve for all valuation-edge sources.  A
+preimage is not indexed by an arbitrary residue.  It is indexed by the
+two new depth coordinates it inserts between the target depth and the
+source depth.
+
+\begin{theorem}[Preimage-pair theorem]\label{thm:preimage}
+Fix a target vertex $u=(s,e)\in V(G_D)$.  The valuation-edge preimages
+of $u$ are canonically indexed by pairs
+\[
+e<i<j\le D.
+\]
+For the pair $(i,j)$, set
+\[
+t=i-e,
+\qquad
+\rho=j-i,
+\qquad
+ d=j.
+\]
+Then the unique source is obtained by solving
+\[
+q\equiv3^{-t}(1+2^\rho s)\pmod {2^{e+\rho}}
+\]
+and setting
+\[
+\Pre_{i,j}(s,e)=\bigl(\oddrep_j(2^tq-1),j\bigr).
+\]
+Consequently $|F^{-1}(s,e)|=\binom{D-e}{2}$.
+\end{theorem}
+
+\begin{proof}
+If a valuation edge has source depth $d$ and target depth $e$, then
+\[
+d=e+t+\rho.
+\]
+Thus $i=e+t$ and $j=d$ satisfy $e<i<j\le D$.
+
+Conversely, fix $e<i<j\le D$ and put $t=i-e$, $\rho=j-i$.  A source
+with target residue $s$ must satisfy
+\[
+3^tq-1\equiv2^\rho s\pmod {2^{e+\rho}},
+\]
+or equivalently
+\[
+q\equiv3^{-t}(1+2^\rho s)\pmod {2^{e+\rho}}.
+\]
+This congruence has a unique odd solution modulo $2^{e+\rho}$.  With
+$r=\oddrep_j(2^tq-1)$, one has $\nuu(r+1)=t$.  Since $s$ is odd, the
+valuation of $3^tq-1$ is exactly $\rho$, and division by $2^\rho$
+gives target residue $s$ modulo $2^e$.  The source is resolved because
+$e\ge1$.  Uniqueness follows from the same congruence for $q$.
+\end{proof}
+
+The pair attached to a valuation edge $v=(r,d)\to(s,e)$ is therefore
+\[
+\Pair(v)=\{e+\nuu(r+1),d\}.
+\]
+Each preimage step adds two depths: an intermediate valuation depth and
+the source depth.
+
+\section{Histories and binomial layers}\label{sec:histories}
+Let
+\[
+R_D(v)=\dist(v,C_D)
+\]
+when $v$ reaches $C_D$, and $R_D(v)=\infty$ otherwise.  If
+$R_D(v)=k>0$, then $v$ is resolved and not a direct return, and
+repeated valuation edges give a unique chain
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D.
+\]
+
+
+For $d\ge2$, let $\tau_d$ be the top-bit involution
+\[
+\tau_d(r,d)=
+\begin{cases}
+(r+2^{d-1},d),&r<2^{d-1},\\
+(r-2^{d-1},d),&r>2^{d-1}.
+\end{cases}
+\]
+It exchanges the two depth-$d$ lifts of the same residue modulo $2^{d-1}$.
+
+\begin{proposition}[Stable core seeds]\label{prop:seeds}
+For $2\le d\le D-2$, the quotient $(C_D\cap V_d)/\tau_d$ is canonically labeled by the two-element sets
+\[
+\{a,d\},\qquad 1\le a<d.
+\]
+There are two oriented core vertices above each label.
+\end{proposition}
+
+\begin{proof}
+For $1\le a\le d-2$, the two children of the exceptional vertex of type $a$ at depth $d-1$ consist of the exceptional vertex of type $a$ at depth $d$ and its direct-return sibling.  These two children differ by $2^{d-1}$, so they form one $\tau_d$-orbit.  The remaining orbit comes from the two children of the maximal exceptional vertex at depth $d-1$, namely the exceptional vertices of types $d-1$ and $d$.  Since $d\le D-2$, no boundary vertex is involved.  These $d-1$ two-element orbits exhaust $C_D\cap V_d$.
+\end{proof}
+
+Here \emph{stable} means that the depth is away from the truncation boundary: depths $2\le d\le D-2$ have the same core-seed structure they would have in any larger cutoff graph.
+
+\begin{definition}[Seed and orientation]\label{def:orientation}
+For a stable core vertex $v_0=(r,d)\in C_D$ with $2\le d\le D-2$, let
+\[
+\Seed(v_0)=\{a,d\}
+\]
+be the label of its $\tau_d$-orbit from Proposition~\ref{prop:seeds}.  Its orientation is the top-bit sign
+\[
+\eps(v_0)=
+\begin{cases}
+-,&1\le r<2^{d-1},\\
++,&2^{d-1}<r<2^d.
+\end{cases}
+\]
+For any positive-distance vertex $v$, define $\eps(v)$ to be the orientation of the terminal core vertex $v_0$ in its valuation chain.
+\end{definition}
+
+If $v=v_k\to\cdots\to v_0\in C_D$ is the unique chain for a vertex of positive finite distance, write $v_m=(r_m,d_m)$.  The endpoint $v_0$ has stable depth: $2\le d_0\le D-2$, because the final edge is not a direct return and every valuation edge lowers depth by at least two.  Define the projected history
+\[
+\Sigma(v)=\Seed(v_0)\cup\bigcup_{m=1}^k\{d_{m-1}+\nuu(r_m+1),d_m\}.
+\]
+For a stable core vertex itself, set $\Sigma(v_0)=\Seed(v_0)$.
+
+\begin{lemma}[History intervals]\label{lem:historyintervals}
+If $v$ has finite distance $k$ and depth $d$, then the union defining $\Sigma(v)$ is disjoint.  For $k\ge1$,
+\[
+\Sigma(v)\subseteq[d],\qquad d\in\Sigma(v),\qquad |\Sigma(v)|=2k+2.
+\]
+\end{lemma}
+
+\begin{proof}
+For the edge $v_m\to v_{m-1}$, put
+\[
+t_m=\nuu(r_m+1),\qquad \rho_m=\nuu(3^{t_m}q_m-1).
+\]
+Then
+\[
+d_m=d_{m-1}+t_m+\rho_m,
+\]
+so
+\[
+\{d_{m-1}+t_m,d_m\}\subset(d_{m-1},d_m].
+\]
+The seed lies in $[1,d_0]$.  Inducting along the chain, each preimage step appends two new elements in the next interval $(d_{m-1},d_m]$.  Hence the union is disjoint, lies in $[d]$, contains the final depth $d$, and has cardinality $2+2k$.
+\end{proof}
+
+For $k\ge1$, define
+\[
+\Sfam_{d,k}=\{\Sigma\subseteq[d]:d\in\Sigma,\ |\Sigma|=2k+2\}.
+\]
+
+\begin{theorem}[History bijection]\label{thm:bijection}
+For $D\ge3$, $k\ge1$, and $1\le d\le D$, the map
+\[
+v\longmapsto (\eps(v),\Sigma(v))
+\]
+is a canonical bijection
+\[
+\{v:\depth(v)=d,\ R_D(v)=k\}
+\longrightarrow
+\{+,-\}\times\Sfam_{d,k}.
+\]
+Here canonical means that the inverse is computed by the explicit preimage construction of Theorem~\ref{thm:preimage}.  Consequently
+\[
+\bigl|\{v:\depth(v)=d,\ R_D(v)=k\}\bigr|=2\binom{d-1}{2k+1}.
+\]
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:historyintervals} shows that the map lands in $\{+,-\}\times\Sfam_{d,k}$.
+
+To reconstruct, take $(\eps,\Sigma)$ with
+\[
+\Sigma=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}=d\}.
+\]
+Start with the oriented core vertex labeled by $\{\sigma_1,\sigma_2\}$ and orientation $\eps$.  At step $m=1,\ldots,k$, use Theorem~\ref{thm:preimage} to take the unique valuation-edge preimage of the current target of depth $\sigma_{2m}$ indexed by the pair
+\[
+\sigma_{2m}<\sigma_{2m+1}<\sigma_{2m+2}.
+\]
+This constructs a chain whose final source has depth $d$.
+
+Each reconstructed edge has target depth at least $2$, so no reconstructed source is a direct return; hence the first time the chain reaches the core is its prescribed endpoint.  Thus the final source has distance $k$.  The construction is inverse to the history map because Theorem~\ref{thm:preimage} gives a unique source for each target and pair.
+
+The count follows from
+\[
+|\Sfam_{d,k}|=\binom{d-1}{2k+1},
+\]
+since $d$ is forced to lie in $\Sigma$.
+\end{proof}
+
+\begin{lemma}[Top-bit equivariance]\label{lem:topbit}
+Let $v=(r,d)$ be a regular vertex with valuation edge $F(v)=(s,e)$ and suppose $e\ge2$.  Then $\tau_d(v)$ is regular with the same valuation labels $(t,\rho)$, and
+\[
+F(\tau_d v)=\tau_e F(v).
+\]
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+t=\nuu(r+1),\qquad q=\frac{r+1}{2^t},\qquad \rho=\nuu(3^tq-1),
+\]
+so $d=e+t+\rho$.  Replacing $r$ by its top-bit flip changes $r+1$ to
+\[
+r+1\pm2^{d-1}.
+\]
+Since $e\ge2$ and $\rho\ge1$, one has $d-1>t$, so the value of $t$ is unchanged.  The corresponding odd quotient is
+\[
+q'=q\pm2^{d-1-t}.
+\]
+Then
+\[
+3^tq'-1=(3^tq-1)\pm3^t2^{d-1-t}.
+\]
+The added term has two-adic valuation $d-1-t=\rho+e-1>\rho$, so the exact value of $\rho$ is also unchanged.  After division by $2^\rho$, the target odd representative changes by
+\[
+\pm 3^t2^{e-1},
+\]
+which is congruent modulo $2^e$ to adding or subtracting the top bit $2^{e-1}$.  Hence the target is $\tau_e(s,e)$.
+\end{proof}
+
+\begin{corollary}[Quotient layers]\label{cor:quotient}
+For $k\ge1$ and $d\ge2$,
+\[
+\{v:\depth(v)=d,\ R_D(v)=k\}/\tau_d
+\cong
+\Sfam_{d,k}.
+\]
+Equivalently, summing over $d\le D$,
+\[
+\bigl|\{v:R_D(v)=k\}\bigr|=2\binom{D}{2k+2}.
+\]
+\end{corollary}
+
+\begin{proof}
+Positive-distance valuation chains never use a direct-return edge, and every target depth along such a chain is at least $2$.  Lemma~\ref{lem:topbit} therefore shows that the whole chain commutes with the top-bit involution.  The involution changes only the orientation coordinate $\eps$ and leaves the subset history $\Sigma$ unchanged.  Quotienting Theorem~\ref{thm:bijection} by this two-element orientation gives the first claim.
+
+For the total count, sum the oriented layer count:
+\[
+\sum_{d=1}^D2\binom{d-1}{2k+1}
+=
+2\sum_{d=2k+2}^D\binom{d-1}{2k+1}
+=
+2\binom{D}{2k+2},
+\]
+where the last equality is the hockey-stick identity.
+\end{proof}
+
+\section{Weighted histories}\label{sec:weighted}
+
+The history coordinate is not only a counting device.  It also records the additive statistic that corresponds to Syracuse logarithmic drift.  In this section we regard $G_D$ as a weighted directed graph by assigning a real weight to each valuation edge from its valuation label.
+
+Put
+\[
+\alpha=\log_2 3.
+\]
+If $v=(r,d)$ is regular and $F(v)=u=(s,e)$, write
+\[
+t=\nuu(r+1),\qquad q=\frac{r+1}{2^t},\qquad \rho=\nuu(3^tq-1).
+\]
+Thus $d=e+t+\rho$.  Define the edge weight
+\[
+\omega(v,u)=t\alpha-(t+\rho)=t\alpha-(d-e).
+\]
+Equivalently, if the pair of the edge is
+\[
+\Pair(v)=\{i,j\},\qquad e<i<j=d,
+\]
+then
+\[
+\omega(v,u)=(i-e)\alpha-(j-e).
+\]
+
+Now let $v$ have positive finite distance $R_D(v)=k$, and write its valuation chain as
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D.
+\]
+The total chain weight is
+\[
+\Omega(v)=\sum_{m=1}^k \omega(v_m,v_{m-1}).
+\]
+The endpoint core vertex carries no weight in this definition; only the valuation edges in the distance chain are counted.
+
+For a history
+\[
+\Sigma=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}=d\}\in\Sfam_{d,k},
+\]
+define the alternating-gap sum
+\[
+T(\Sigma)=\sum_{m=1}^k(\sigma_{2m+1}-\sigma_{2m})
+\]
+and the history weight
+\[
+\Omega(\Sigma)=T(\Sigma)\alpha-(d-\sigma_2).
+\]
+
+\begin{theorem}[Weight factorization through histories]\label{thm:weightfactor}
+Let $D\ge3$, $k\ge1$, and let $v$ be a vertex with $R_D(v)=k$ and $\depth(v)=d$.  Then
+\[
+\Omega(v)=\Omega(\Sigma(v)).
+\]
+Consequently the total chain weight depends only on the quotient history $\Sigma(v)$ and is independent of the orientation $\eps(v)$.
+\end{theorem}
+
+\begin{proof}
+Write the distance chain as
+\[
+v=v_k\to v_{k-1}\to\cdots\to v_0\in C_D,
+\]
+and put $v_m=(r_m,d_m)$.  For the edge $v_m\to v_{m-1}$, let
+\[
+t_m=\nuu(r_m+1),\qquad q_m=\frac{r_m+1}{2^{t_m}},\qquad \rho_m=\nuu(3^{t_m}q_m-1).
+\]
+By the definition of the history coordinate, if
+\[
+\Sigma(v)=\{\sigma_1<\sigma_2<\cdots<\sigma_{2k+2}=d\},
+\]
+then the $m$th valuation preimage step has
+\[
+d_{m-1}=\sigma_{2m},\qquad d_{m-1}+t_m=\sigma_{2m+1},\qquad d_m=\sigma_{2m+2}.
+\]
+Therefore
+\[
+t_m=\sigma_{2m+1}-\sigma_{2m},
+\qquad
+ t_m+\rho_m=d_m-d_{m-1}=\sigma_{2m+2}-\sigma_{2m}.
+\]
+Summing the edge weights gives
+\begin{align*}
+\Omega(v)
+&=\sum_{m=1}^k\bigl(t_m\alpha-(t_m+\rho_m)\bigr)\\
+&=\alpha\sum_{m=1}^k(\sigma_{2m+1}-\sigma_{2m})
+  -\sum_{m=1}^k(\sigma_{2m+2}-\sigma_{2m})\\
+&=T(\Sigma(v))\alpha-(\sigma_{2k+2}-\sigma_2)\\
+&=T(\Sigma(v))\alpha-(d-\sigma_2).
+\end{align*}
+This is exactly $\Omega(\Sigma(v))$.  Since $\Sigma(v)$ is unchanged by switching the top-bit orientation, the total chain weight is independent of $\eps(v)$.
+\end{proof}
+
+\begin{corollary}[Weighted quotient layers]\label{cor:weightedquotient}
+For $k\ge1$ and $d\ge2$, the quotient bijection
+\[
+\{v:\depth(v)=d,\ R_D(v)=k\}/\tau_d\cong\Sfam_{d,k}
+\]
+is weight-preserving when the left side is weighted by total chain weight and $\Sfam_{d,k}$ is weighted by $\Omega(\Sigma)$.
+\end{corollary}
+
+\begin{remark}
+The statistic $T(\Sigma)$ selects the odd-numbered gaps after the core seed depth $\sigma_2$, while $d-\sigma_2$ is the total depth gained after the seed.  Thus the weight is an alternating-gap functional on the same subsets that index the binomial distance layers:
+\[
+\Omega(\Sigma)
+=
+\alpha\bigl[(\sigma_3-\sigma_2)+(\sigma_5-\sigma_4)+\cdots+(\sigma_{2k+1}-\sigma_{2k})\bigr]
+-(d-\sigma_2).
+\]
+This is the structural point of the weighted theorem: once the core seed is fixed, the log-drift sees only the odd-indexed inserted gaps and the total post-seed depth gain.  No information from the orientation coordinate is needed.
+\end{remark}
+
+\section{Origin of the rule and meaning of the weight}\label{sec:collatz}
+
+The rule used to define $G_D$ is extracted from a residue-class model of the odd Collatz/Syracuse dynamics.  In that model one studies the odd-to-odd valuation update
+\[
+X+1=2^tq,
+\qquad
+3^tq-1=2^\rho Y.
+\]
+This is not the usual one-step map $X\mapsto (3X+1)/2^{\nu_2(3X+1)}$.  Rather, it is a grouped valuation step: the first equation records a run-length $t$ determined by the binary position of $X+1$, and the second equation records the power of two removed after multiplying the odd quotient by $3^t$.
+
+The adaptive graph keeps exactly the residue-class information needed to know this grouped step.  If a depth-$d$ class determines $t$ and determines $\rho$ before the visible precision is exhausted, it has a valuation edge.  If the visible precision is exhausted, the class is exceptional and must be refined.  This is why exceptional vertices refine and regular vertices move to lower depth.
+
+The same equations explain the edge weight.  Since
+\[
+Y=\frac{3^tX+3^t-2^t}{2^{t+\rho}},
+\]
+one has
+\[
+\log_2(Y/X)
+=
+t\log_2 3-(t+\rho)
++
+\log_2\!\left(1+\frac{1-(2/3)^t}{X}\right).
+\]
+For large lifts $X$ in a fixed residue class, the last term is $O(1/X)$.  Thus the graph weight
+\[
+\omega=t\log_2 3-(t+\rho)
+\]
+is precisely the residue-class part of the Syracuse multiplicative drift.  Along a finite chain, $\Omega(v)$ is the sum of these local log-drift terms.  Theorem~\ref{thm:weightfactor} says that this finite residue-level drift is a function only of the subset history $\Sigma$.
+
+This connects the paper to the standard logarithmic bookkeeping used throughout Collatz analysis.  In cycle and stopping-time arguments, one compares the accumulated power of $3$ with the accumulated power of $2$; in logarithmic form this is a sum of terms of the shape
+\[
+(\text{number of }3\text{-multiplications})\log_2 3
+-
+(\text{number of }2\text{-divisions}).
+\]
+The present paper does not add a convergence claim to that tradition.  Its contribution is to show that, for the finite adaptive valuation graph, the corresponding log-functional has an exact combinatorial coordinate: the binomial subset history.
+
+The statements proved here therefore have a deliberately limited scope.  A vertex $(r,d)$ is a residue class, not an integer.  The integer $1$ is represented by an infinite compatible tower of residue classes, and integer dynamics require lift data beyond any fixed $G_D$.  What the graph supplies is a finite, classifiable object: adaptive two-adic refinement produces a recurrent core, pair-indexed valuation preimages, a top-bit symmetry, binomial distance layers, and a history-level log-drift functional.
+
+\begin{thebibliography}{99}
+
+\bibitem{Allouche1979}
+J.-P. Allouche.
+Sur la conjecture de ``Syracuse--Kakutani--Collatz''.
+\emph{S\'eminaire de Th\'eorie des Nombres de Bordeaux}, exp. no.~9, 1978--1979.
+
+\bibitem{ApplegateLagarias1995}
+D. Applegate and J. C. Lagarias.
+The distribution of $3x+1$ trees.
+\emph{Experimental Mathematics} 4 (1995), no.~3, 193--209.
+
+\bibitem{ApplegateLagarias2003}
+D. Applegate and J. C. Lagarias.
+Lower bounds for the total stopping time of $3x+1$ iterates.
+\emph{Mathematics of Computation} 72 (2003), no.~242, 1035--1049.
+
+\bibitem{Bernstein1994}
+D. J. Bernstein.
+A non-iterative $2$-adic statement of the $3n+1$ conjecture.
+\emph{Proceedings of the American Mathematical Society} 121 (1994), no.~2, 405--408.
+
+\bibitem{BernsteinLagarias1996}
+D. J. Bernstein and J. C. Lagarias.
+The $3x+1$ conjugacy map.
+\emph{Canadian Journal of Mathematics} 48 (1996), no.~6, 1154--1169.
+
+\bibitem{Conway1972}
+J. H. Conway.
+Unpredictable iterations.
+In \emph{Proceedings of the 1972 Number Theory Conference}, University of Colorado, Boulder, 1972, 49--52.
+
+\bibitem{Diestel2017}
+R. Diestel.
+\emph{Graph Theory}.
+Graduate Texts in Mathematics 173, 5th ed., Springer, 2017.
+
+\bibitem{Eliahou1993}
+S. Eliahou.
+The $3x+1$ problem: new lower bounds on nontrivial cycle lengths.
+\emph{Discrete Mathematics} 118 (1993), no.~1--3, 45--56.
+
+\bibitem{Everett1977}
+C. J. Everett.
+Iteration of the number-theoretic function $f(2n)=n$, $f(2n+1)=3n+2$.
+\emph{Advances in Mathematics} 25 (1977), no.~1, 42--45.
+
+\bibitem{FlajoletSedgewick2009}
+P. Flajolet and R. Sedgewick.
+\emph{Analytic Combinatorics}.
+Cambridge University Press, 2009.
+
+\bibitem{Garner1981}
+L. E. Garner.
+On the Collatz $3n+1$ algorithm.
+\emph{Proceedings of the American Mathematical Society} 82 (1981), no.~1, 19--22.
+
+\bibitem{Gouvea1997}
+F. Q. Gouv\^ea.
+\emph{$p$-adic Numbers: An Introduction}.
+Universitext, 2nd ed., Springer, 1997.
+
+\bibitem{Hercher2023}
+C. Hercher.
+There are no Collatz $m$-cycles with $m \leq 91$.
+\emph{Journal of Integer Sequences} 26 (2023), Article 23.3.5.
+
+\bibitem{Korec1994}
+I. Korec.
+A density estimate for the $3x+1$ problem.
+\emph{Mathematica Slovaca} 44 (1994), no.~1, 85--89.
+
+\bibitem{KrasikovLagarias2003}
+I. Krasikov and J. C. Lagarias.
+Bounds for the $3x+1$ problem using difference inequalities.
+\emph{Acta Arithmetica} 109 (2003), no.~3, 237--258.
+
+\bibitem{Lagarias1985}
+J. C. Lagarias.
+The $3x+1$ problem and its generalizations.
+\emph{The American Mathematical Monthly} 92 (1985), no.~1, 3--23.
+
+\bibitem{LagariasAnnotated1999}
+J. C. Lagarias.
+The $3x+1$ problem: an annotated bibliography (1963--1999).
+Preprint, arXiv:math/0309224, 2003.
+
+\bibitem{LagariasAnnotated2009}
+J. C. Lagarias.
+The $3x+1$ problem: an annotated bibliography, II (2000--2009).
+Preprint, arXiv:math/0608208, 2006.
+
+\bibitem{Lagarias2010}
+J. C. Lagarias, editor.
+\emph{The Ultimate Challenge: The $3x+1$ Problem}.
+American Mathematical Society, Providence, RI, 2010.
+
+\bibitem{LaarhovenDeWeger2013}
+T. Laarhoven and B. de Weger.
+The Collatz conjecture and de Bruijn graphs.
+\emph{Indagationes Mathematicae} 24 (2013), no.~4, 971--983.
+
+\bibitem{MonksYazinski2004}
+K. G. Monks and J. Yazinski.
+The autoconjugacy of the $3x+1$ function.
+\emph{Discrete Mathematics} 275 (2004), no.~1--3, 219--236.
+
+\bibitem{Rozier2019}
+O. Rozier.
+Parity sequences of the $3x+1$ map on the $2$-adic integers and Euclidean embedding.
+\emph{Integers} 19 (2019), Paper A8.
+
+\bibitem{Stanley2012}
+R. P. Stanley.
+\emph{Enumerative Combinatorics, Volume 1}.
+Cambridge Studies in Advanced Mathematics 49, 2nd ed., Cambridge University Press, 2012.
+
+\bibitem{Tao2022}
+T. Tao.
+Almost all orbits of the Collatz map attain almost bounded values.
+\emph{Forum of Mathematics, Pi} 10 (2022), e12.
+
+\bibitem{Terras1976}
+R. Terras.
+A stopping time problem on the positive integers.
+\emph{Acta Arithmetica} 30 (1976), 241--252.
+
+\bibitem{Wirsching1998}
+G. J. Wirsching.
+\emph{The Dynamical System Generated by the $3n+1$ Function}.
+Lecture Notes in Mathematics 1681, Springer, 1998.
+
+\end{thebibliography}
+\end{document}
