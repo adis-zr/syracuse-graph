@@ -139,38 +139,23 @@ reach~$1$.  We don't know why.  The standard references are Lagarias'
 survey~\cite{Lagarias1985} and the annotated bibliographies that
 followed~\cite{LagariasAnnotated1999, LagariasAnnotated2009, Lagarias2010}.
 
-For the forward map, every integer has a unique successor, but a
-chosen target can have many predecessors.  Thus one usually studies rooted
-inverse trees or predecessor sets attached to specified nodes or cycles.  Their
-branching and stopping-time statistics have been studied
-extensively~\cite{ApplegateLagarias1995, ApplegateLagarias2003, Wirsching1998}.
+Running the map in reverse, every integer has a unique successor, so the predecessors form a tree.
+Its branching and stopping-time statistics have been studied extensively~\cite{ApplegateLagarias1995, ApplegateLagarias2003, Wirsching1998}.
 
-The standard parity-dependent $3x+1$ map also has a $2$-adic form.  Bernstein
-and Lagarias studied the continuous map
+A different map can be constructed in the $2$-adic integers.  The odd-to-odd
+map
 \[
-T(x)=
-\begin{cases}
-(3x+1)/2, & x\text{ odd},\\
-x/2, & x\text{ even},
-\end{cases}
+S(x)=\frac{3x+1}{2^{\nu_2(3x+1)}}
 \]
-on $\mathbb Z_2$ and constructed a conjugacy with the $2$-adic shift, including
-an analysis of the induced permutations modulo~$2^n$~\cite{Bernstein1994,
-BernsteinLagarias1996}.  The accelerated odd-to-odd expression
-\[
-U(x)=\frac{3x+1}{2^{\nu_2(3x+1)}}
-\]
-is related but distinct: it is not a global continuous map on all of
-$\mathbb Z_2$.  At the zero $x=-1/3$ of $3x+1$, the limiting odd part
-depends on the $2$-adic direction of approach.  This paper does not rely on
-such a global extension.  It studies the finite residue-class information
-carried by the valuation $\nu_2(3x+1)$, and by the grouped valuation step
-defined below.
+extends continuously to $\mathbb{Z}_2$.  Bernstein and Lagarias constructed a
+conjugacy map that intertwines the $2$-adic shift with $S$ and analyzed the
+induced permutations modulo~$2^n$~\cite{Bernstein1994,
+BernsteinLagarias1996}.  The $2$-adic valuation $\nu_2(3x+1)$ is what I study 
+in this paper.
 
-In integer space, rooted inverse trees provide one way to organize
-predecessors.  In $2$-adic residue space, the corresponding finite graphs need
-not be trees.  A residue class modulo~$2^d$ can have multiple predecessors at
-higher depth, and the dynamics between classes can cycle.  Laarhoven and
+In integer space, the predecessor picture is a tree.  In $2$-adic residue
+space, it isn't.  A residue class modulo~$2^d$ can have multiple predecessors
+at higher depth, and the dynamics between classes can cycle.  Laarhoven and
 de~Weger made this precise: at a fixed modulus~$2^d$, the $3n+1$ graph on
 residue classes is isomorphic to the binary de~Bruijn graph, and the infinite
 $2$-adic limit recovers the Bernstein--Lagarias
@@ -185,17 +170,13 @@ integers congruent to $r$ modulo~$2^d$.  Sometimes the class already
 determines the next odd-to-odd transition completely, and it gets a forward
 edge to a lower-depth class.  Sometimes the visible bits are not enough, and
 the class must be split at depth $d+1$.  The result is a finite directed graph
-$G_D$ on vertices at varying depths.  It is neither a rooted integer predecessor tree nor
+$G_D$ on vertices at varying depths.  It is neither the predecessor tree nor
 the fixed-modulus de~Bruijn graph.  It has cycles.
 
 The experiment revealed a graph structure that was surprisingly rigid.  At each 
 depth~$d$, exactly $d$ residue classes are \emph{unresolved}: the ones where the visible 
 precision does not yet determine the transition.  That count being exactly~$d$ was 
 not assumed, it emerged from initial computation and is established in Section~\ref{sec:local}.
-
-The results are deliberately finite and structural: they classify an adaptive
-residue-depth graph, not integer orbits, and they do not prove convergence for
-the $3n+1$ problem.
 
 The unresolved residues have an explicit algebraic form.  Their
 children at depth $d+1$ split one-for-one into a new unresolved residue and a
@@ -319,7 +300,7 @@ The finite directed graph $G_D$, for a positive integer cutoff $D$, is now fully
 \item \textbf{Refinement}: each unresolved vertex at depth $d<D$ splits into two children at depth $d+1$.  At depth $D$, unresolved vertices have no outgoing edges.
 \end{itemize}
 
-The graph is neither a rooted integer predecessor tree nor the de~Bruijn graph at a fixed modulus.  It is an adaptive structure: resolved vertices move to lower depth; unresolved vertices move to higher depth.  The interplay between these two directions is what gives $G_D$ its rigid internal structure.
+The graph is neither the predecessor tree of the integers nor the de~Bruijn graph at a fixed modulus.  It is an adaptive structure: resolved vertices move to lower depth; unresolved vertices move to higher depth.  The interplay between these two directions is what gives $G_D$ its rigid internal structure.
 
 \begin{figure}[htbp]
 \centering
@@ -477,34 +458,30 @@ vertex in $C_D$ has a direct-return child
 (Lemma~\ref{lem:directreturns}), and hence a path to $(1,1)$.  Every
 maximal unresolved vertex in $C_D$ has depth at most $D-2$, since it
 is not on the boundary; one refinement step produces a non-maximal
-unresolved child, and the previous case applies. Conversely, every unresolved residue
-at depth \(d\ge2\) reduces modulo \(2^{d-1}\) to an unresolved residue at depth \(d-1\).
-Indeed, for \(1\le t\le d-2\),
+unresolved child, and the previous case applies. Conversely, every unresolved residue 
+at depth \(d\) reduces modulo \(2^{d-1}\) to an unresolved residue at depth \(d-1\). 
+Indeed, for
+\(t<d\),
 \[
 r_{d,t}\equiv 2^t(3^t)^{-1}-1 \pmod{2^d}
 \]
-reduces to the same defining congruence at depth \(d-1\).  For
-\(t=d-1\) and \(t=d\), the reduction is instead
-\[
-r_{d,t}\equiv -1 \equiv 2^{d-1}-1 \pmod{2^{d-1}},
-\]
-the maximal unresolved residue at depth \(d-1\).  Thus each unresolved
-vertex other than \((1,1)\) has an unresolved parent, and induction gives a
-refinement path from \((1,1)\) to it.  Every direct return is a refinement child of an unresolved
-vertex, so \((1,1)\) reaches all of \(C_D\).
+reduces to the same defining congruence at depth \(d-1\), with the
+case \(t=d\) reducing to the maximal residue \(2^{d-1}-1\).  Thus each
+unresolved vertex has an unresolved parent, and induction gives a
+refinement path from \((1,1)\) to it.  Every direct return is a
+refinement child of an unresolved vertex, so \((1,1)\) reaches all of
+\(C_D\).
 
 \emph{Absorption.}
 Let $v$ be a resolved vertex that is not a direct return.  It has a valuation edge, since the alternative $e\le0$ would make it unresolved.  That edge lands at depth $e=d-t-\rho$, which is at most $d-2$ because $t\ge1$ and $\rho\ge1$.  In particular, no valuation edge from depth at most~$D$ can reach depth $D-1$ or~$D$.  Since the boundary sits entirely at those depths, iterating valuation edges reaches $C_D$ before the boundary.
 
 \emph{No other cycles.}
-Outside \(C_D\), the only unresolved vertices are boundary vertices.  The
-terminal depth-\(D\) boundary vertices have no outgoing edges, while the
-maximal boundary vertex at depth \(D-1\) has only refinement edges to terminal
-boundary vertices.  A resolved vertex outside \(C_D\) has a valuation edge; if
-that edge does not enter \(C_D\), then its target has depth
-\(e=d-t-\rho<d\).  Thus any path outside \(C_D\) either terminates at the
-boundary or follows valuation edges of strictly decreasing depth.  Neither
-behavior permits a cycle.
+Outside \(C_D\), an unresolved vertex is a boundary vertex and has no
+outgoing refinement edge.  A resolved vertex outside \(C_D\) has a
+valuation edge; if that edge does not enter \(C_D\), then its target
+has depth \(e=d-t-\rho<d\).  Thus any path outside \(C_D\) either
+terminates at the boundary or follows valuation edges of strictly
+decreasing depth.  Neither behavior permits a cycle.
 
 \emph{Count.}
 The unresolved vertices across depths $1$ through $D$ number
@@ -1257,7 +1234,7 @@ This connects the paper to the standard logarithmic bookkeeping used throughout 
 \]
 The present paper does not add a convergence claim to that tradition.  Its contribution is to show that, for the finite adaptive valuation graph, the corresponding log-functional has an exact combinatorial coordinate: the binomial subset history.
 
-The statements proved here therefore have a deliberately limited scope.  A vertex $(r,d)$ is a residue class, not an integer.  The integer $1$ is represented by an infinite compatible tower of residue classes, and integer dynamics require lift data beyond any fixed $G_D$.  No theorem in this paper proves, or is meant to imply, that all positive integer orbits reach $1$.  What the graph supplies is a finite, classifiable object: adaptive two-adic refinement produces a unique nontrivial SCC, pair-indexed valuation preimages, a top-bit symmetry, binomial distance layers, and a history-level log-drift functional.
+The statements proved here therefore have a deliberately limited scope.  A vertex $(r,d)$ is a residue class, not an integer.  The integer $1$ is represented by an infinite compatible tower of residue classes, and integer dynamics require lift data beyond any fixed $G_D$.  What the graph supplies is a finite, classifiable object: adaptive two-adic refinement produces a unique nontrivial SCC, pair-indexed valuation preimages, a top-bit symmetry, binomial distance layers, and a history-level log-drift functional.
 
 \section*{Disclosure}\label{sec:disclosure}
 The author used ChatGPT 5.4 and ChatGPT 5.5 for editorial assistance with LaTeX formatting, spellcheck, and grammar. The mathematical content, including the definitions, proofs, code, and conclusions are the author's own.
