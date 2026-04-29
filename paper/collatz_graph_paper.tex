@@ -104,24 +104,19 @@
 \begin{abstract}
 \setlength{\parskip}{0.55em plus 0.1em minus 0.05em} 
 \setlength{\parindent}{0pt} 
-This paper builds a finite directed graph $G_D$ from the $2$-adic valuation
+This paper builds an adaptive finite directed graph $G_D$ from the $2$-adic valuation
 data of the $3n+1$ map.
 
 The main result is an explicit bijection for the finite-distance layers of
-this adaptive graph.  After quotienting by the top-bit symmetry, the
-depth-$d$, distance-$k$ layer is in canonical bijection with
+this adaptive graph. The paper proves that the depth-$d$, distance-$k$ layer of $G_D$
+is in canonical bijection with
 \[
 \Sfam_{d,k}
 =
 \{\Sigma\subseteq[d]:d\in\Sigma,\ |\Sigma|=2k+2\}.
 \]
-The same history subset also carries the logarithmic drift weight of the
-corresponding valuation chain, so the bijection turns the graph into a
-usable coordinate system rather than only a counting result.
-
-The paper does not prove a new convergence result for the $3n+1$ problem.
-Its contribution is a finite graph-theoretic and enumerative classification
-of the adaptive $2$-adic valuation structure that the odd-to-odd map exposes.
+The paper also shows that $G_D$ encodes in its structure the logarithmic drift, 
+thus turning the graph into a usable coordinate system rather than only a counting result.
 \end{abstract}
 \maketitle
 
@@ -134,8 +129,8 @@ T(n)=
 n/2, & n\text{ even}.
 \end{cases}
 \]
-Pick any positive integer.  Iterate.  The conjecture is that you always
-reach~$1$.  We don't know why.  The standard references are Lagarias'
+Pick any positive integer and iterate.  The conjecture is that the sequence generated always
+reaches~$1$.  We don't know why.  The standard references are Lagarias'
 survey~\cite{Lagarias1985} and the annotated bibliographies that
 followed~\cite{LagariasAnnotated1999, LagariasAnnotated2009, Lagarias2010}.
 
@@ -226,7 +221,7 @@ graph-theoretic and enumerative statement about adaptive two-adic valuation
 data.
 
 \section{The valuation decomposition graph}\label{sec:valuation}\label{sec:graph}
-The graph is constructed from one arithmetic operation: the grouped odd-to-odd $3n+1$ step. Everything that follows depends on it. In this section we'll build the intuition first, then dive into definitions.
+The graph is constructed from one arithmetic operation: the grouped odd-to-odd $3n+1$ step, and everything that follows depends on it. In this section we'll build the intuition first, then dive into definitions.
 
 A vertex is a pair $(r,d)$, where $r$ is an odd residue modulo $2^d$ and $1\le d\le D$.  Think of it as a residue class: all odd integers that look like $r$ when you read their last $d$ binary digits.  The depth $d$ is the amount of precision you have.
 
